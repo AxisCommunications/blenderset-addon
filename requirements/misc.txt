@@ -1,0 +1,13 @@
+black
+fire
+more_itertools
+opencv-python
+OpenEXR
+pillow
+pip
+pip-tools
+pyglet
+scikit-image
+shapely
+setuptools
+vi3o
