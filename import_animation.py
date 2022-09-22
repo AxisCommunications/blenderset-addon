@@ -6,11 +6,13 @@ import bpy
 import sys
 from blenderset.assets import AssetGenerator
 
-assets = AssetGenerator()
+assets = AssetGenerator(None)
 root = assets.root / "Character_Creator_v3.41" / "Animations" / "Avatar"
 metadata_dir = assets.metadata_dir
-pose_animations = json.load(open(metadata_dir / "animations_metadata.json"))
-# pose_animations = {}
+if (metadata_dir / "animations_metadata.json").exists():
+    pose_animations = json.load(open(metadata_dir / "animations_metadata.json"))
+else:
+    pose_animations = {}
 
 for avatar in root.glob("*"):
     for fn in chain(avatar.glob("*.fbx"), avatar.glob("*.Fbx")):
@@ -23,6 +25,7 @@ for avatar in root.glob("*"):
             for ch in "/|\\":
                 ofn = ofn.replace(ch, "_")
             ofn = root.parent / "Blender" / ofn
+            ofn.parent.mkdir(parents=True, exist_ok=True)
 
             if key not in pose_animations:
                 print("Importing", key)

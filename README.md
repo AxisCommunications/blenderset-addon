@@ -87,11 +87,35 @@ blender marked can be used. Install the addon manually and copy
 [Reallusion Character Creator](https://www.reallusion.com/character-creator/)
 or downloaded from [Actorcore](https://actorcore.reallusion.com/). Export them into
 blender format and place them in
-`example-assets/Character_Creator_v3.41/BlenderCharacters256`. Also, poses are needed
-they can be extracted from animations downloaded from for example [Actorcore](https://actorcore.reallusion.com/). Export them as `.fbx` and place them in
+`example-assets/Character_Creator_v3.41/BlenderCharacters256`, and add an entry to
+`example-metadata/character_metadata.json`.
+Also, poses are needed
+they can be extracted from animations downloaded from for example [Actorcore](https://actorcore.reallusion.com/).
+Export them to blender as `.fbx` and place the files in
 `example-assets/Character_Creator_v3.41/Animations/Avatar/<avatar>/`, where
-`<avatar>` is the name of the base avatar they are exported for, typically
-`CC3_Base_Plus` or `CC_Standard`. Then import them using the `import_animation.py`,
+`<avatar>` is a string specifying which characters the animation can be applied to by
+looking for the same string in the `avatar_base` property of the character metadata.
+Then import them using the `import_animation.py`,
 which can be called by `make import_animations`.
 This will update the metadata in `animations_metadata.json` and convert the `.fbx`
 files into `.blend` files.
+
+To try out the example `example-metadata/character_metadata.json` out of the box:
+
+    * Create an account at [Actorcore](https://actorcore.reallusion.com/) and log in
+    * "Buy" one or several of the free animations
+    * Go to Inventory in the top right menu
+    * Select "Motion" and the motion(s) to download and press "Download"
+    * Select the "Male Robot", check "Export motion only" and press "Next"
+    * Select "Blender" and press "DOWNLOAD"
+    * Extrax the zip file and move the .fbx files into `example-assets/Character_Creator_v3.41/Animations/Avatar/MaleRobot/`
+    * Run `make import_animations` in the blenderset-addon directory
+    * "Buy" the two free Actors `Party_M_0001` and `Party_F_0001`
+    * Go to Inventory in the top right menu
+    * Select "Actor", enable "Multiple Select", chooce the two  actors and press "Download"
+    * Move the two diretories `party-f-0001` and `party-m-0001` to example-assets/Character_Creator_v3.41/BlenderCharacters256/
+    * Start blender with `make interactive`
+    * Open the "Synthetic" tab on the right hand side of the 3D view
+    * Press one of the 3 top "Scenario" buttions
+    * If you want more Characters, press "Create" under "Characters"
+    * To move the characters and alter the pose, press "Update" under "Characters"
