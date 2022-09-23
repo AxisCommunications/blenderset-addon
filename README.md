@@ -4,7 +4,12 @@ Blenderset is tool for creating synthetic training data using blender. It can be
 to create random scenes consisting of a real background image, ontop of which random
 humans and vehicles models are rendered with random lighting. In addition to the
 rendered images, annotations are generated in form of pixelwise
-instance-segmentations and bounding boxes.
+instance-segmentations and bounding boxes. Here are a few example of images produced using blenderset:
+
+[![](example-images/office_realback_tumb.jpg)](example-images/office_realback.jpg)
+[![](example-images/fisheye_office_tumb.jpg)](example-images/fisheye_office.jpg)
+[![](example-images/nyhamnen_tumb.jpg)](example-images/nyhamnen.jpg)
+[![](example-images/real_highway_tumb.jpg)](example-images/real_highway.jpg)
 
 ## Installation
 
@@ -46,10 +51,10 @@ which can either be copied to the above dirs or a config file can be placed in
 
 Each background consist of:
 
-    * A camera image of an empty scene
-    * A camera model
-    * A region of interest (ROI) defining where to place pedestrians
-    * A set of tags used to filter out which backgrounds to use
+* A camera image of an empty scene
+* A camera model
+* A region of interest (ROI) defining where to place pedestrians
+* A set of tags used to filter out which backgrounds to use
 
 These are specified in the `images_metadata.json` file. There is a helper script
 `poly_roi.py` that can be used to create the ROI coordinates:
@@ -102,20 +107,20 @@ files into `.blend` files.
 
 To try out the example `example-metadata/character_metadata.json` out of the box:
 
-    * Create an account at [Actorcore](https://actorcore.reallusion.com/) and log in
-    * "Buy" one or several of the free animations
-    * Go to Inventory in the top right menu
-    * Select "Motion" and the motion(s) to download and press "Download"
-    * Select the "Male Robot", check "Export motion only" and press "Next"
-    * Select "Blender" and press "DOWNLOAD"
-    * Extrax the zip file and move the .fbx files into `example-assets/Character_Creator_v3.41/Animations/Avatar/MaleRobot/`
-    * Run `make import_animations` in the blenderset-addon directory
-    * "Buy" the two free Actors `Party_M_0001` and `Party_F_0001`
-    * Go to Inventory in the top right menu
-    * Select "Actor", enable "Multiple Select", chooce the two  actors and press "Download"
-    * Move the two diretories `party-f-0001` and `party-m-0001` to example-assets/Character_Creator_v3.41/BlenderCharacters256/
-    * Start blender with `make interactive`
-    * Open the "Synthetic" tab on the right hand side of the 3D view
-    * Press one of the 3 top "Scenario" buttions
-    * If you want more Characters, press "Create" under "Characters"
-    * To move the characters and alter the pose, press "Update" under "Characters"
+* Create an account at [Actorcore](https://actorcore.reallusion.com/) and log in
+* "Buy" one or several of the free animations
+* Go to Inventory in the top right menu
+* Select "Motion" and the motion(s) to download and press "Download"
+* Select the "Male Robot", check "Export motion only" and press "Next"
+* Select "Blender" and press "DOWNLOAD"
+* Extrax the zip file and move the .fbx files into `example-assets/Character_Creator_v3.41/Animations/Avatar/MaleRobot/`
+* Run `make import_animations` in the blenderset-addon directory
+* "Buy" the two free Actors `Party_M_0001` and `Party_F_0001`
+* Go to Inventory in the top right menu
+* Select "Actor", enable "Multiple Select", chooce the two  actors and press "Download"
+* Move the two diretories `party-f-0001` and `party-m-0001` to example-assets/Character_Creator_v3.41/BlenderCharacters256/
+* Start blender with `make interactive`
+* Open the "Synthetic" tab on the right hand side of the 3D view
+* Press one of the 3 top "Scenario" buttions
+* If you want more Characters, press "Create" under "Characters"
+* To move the characters and alter the pose, press "Update" under "Characters"

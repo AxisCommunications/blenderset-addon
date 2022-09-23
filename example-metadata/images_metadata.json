@@ -2,7 +2,7 @@
     "office_corridor.jpg":{
         "lens": "LensDistM3057",
         "mask_radius": 0.49,
-        "tags": ["Indoor", "Office", "Grenden", "Fisheye"],
+        "tags": ["Indoor", "Office", "Grenden", "Fisheye", "M3057"],
         "camera_height": 271,
         "original_img_dimension":[2048,2048],
         "image_height": 1024,

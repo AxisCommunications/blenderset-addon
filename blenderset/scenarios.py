@@ -18,8 +18,9 @@ from blenderset.background import (
     GeneratePremadeBackground,
 )
 from blenderset.character import GenerateCharacter
-from blenderset.light import GenerateLightPlane, GenerateHdrDoomLight
+from blenderset.light import GenerateHdrDoomLight
 from blenderset.vehicle import GenerateVehicleAlongPath
+from blenderset.camera import GenerateProjectiveCamera
 
 
 class Scenario(bpy.types.Operator):
@@ -94,6 +95,43 @@ class NyhamnenSynthBack(Nyhamnen):
             ),
         ]
 
+class OfficeRealBack(ComposedAssetGenerator):
+    def __init__(self, context, characters=5):
+        self.characters = characters
+        super().__init__(context)
+
+    def setup(self):
+        return [
+            GenerateBackground(self.context, tags="Office"),
+            GenerateProjectiveCamera(self.context),
+            GenerateHdrDoomLight(self.context),
+            GenerateCharacter(
+                self.context,
+                self.characters,
+                tags=["~age_group:toddler", "wearing_hard_hat:no"],
+                pose_tags="Standing",
+            ),
+        ]
+
+
+class FisheyeOffice(ComposedAssetGenerator):
+    def __init__(self, context, characters=5):
+        self.characters = characters
+        super().__init__(context)
+
+    def setup(self):
+        # GenerateCharacter(self.context, self.characters, tags="~age_group:toddler", pose_tags="Standing"),
+        return [
+            GenerateBackgroundAndCamera(self.context, tags=["Office", "M3057"]),
+            GenerateHdrDoomLight(self.context),
+            GenerateCharacter(
+                self.context,
+                self.characters,
+                tags=["~age_group:toddler"],
+                pose_tags="Standing",
+            ),
+        ]
+
 
 class FisheyeSynthBack(ComposedAssetGenerator):
     def __init__(self, context, characters=5):
@@ -111,41 +149,6 @@ class FisheyeSynthBack(ComposedAssetGenerator):
                 tags="~age_group:toddler",
                 pose_tags="Standing",
                 roi=Point(0, 0).buffer(6),
-            ),
-        ]
-
-
-class ForestRoad(ComposedAssetGenerator):
-    def __init__(self, context, vehicles=3):
-        self.vehicles = vehicles
-        super().__init__(context)
-
-    def setup(self):
-        return [
-            GeneratePremadeBackground(
-                self.context,
-                "forest_road_background.blend",
-            ),
-            GenerateHdrDoomLight(self.context),
-            GenerateVehicleAlongPath(
-                self.context,
-                self.vehicles,
-                tags=[
-                    "~type:Boat",
-                    "~type:Bicycle",
-                    "~type:Plane",
-                    "~type:Motorbike",
-                    "~type:Tractor",
-                    "~type:Formula1",
-                    "~model:Train_ETR",
-                    "~model:Pesa_2010_n2",
-                    "~model:Buggy",
-                    "~model:Kenworth W990",
-                ],
-                delta_x_offsets=(1, 2.5),
-                delta_x_offset_range=(-0.3, 0.3),
-                mirror=True,
-                offset_range=(0.08, 0.7),
             ),
         ]
 
