@@ -24,7 +24,7 @@ class LightCreate(bpy.types.Operator):
 
 
 class LightPanel(bpy.types.Panel):
-    bl_idname = "AxisOmnisetLightPanel"
+    bl_idname = "blenderset.light_panel"
     bl_label = "Light"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

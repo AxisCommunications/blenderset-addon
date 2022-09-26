@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 bl_info = {
-    "name": "Axis Synthetic Data Generation",
+    "name": "Blenderset - Synthetic Data Generation",
     "blender": (3, 0, 0),
     "category": "SyntheticData",
 }

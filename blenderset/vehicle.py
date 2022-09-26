@@ -30,7 +30,7 @@ class VehicleUpdate(bpy.types.Operator):
 
 
 class VehiclePanel(bpy.types.Panel):
-    bl_idname = "AxisVehicles"
+    bl_idname = "blenderset.vehicle_panel"
     bl_label = "Vehicles"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

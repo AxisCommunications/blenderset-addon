@@ -85,7 +85,7 @@ def set_roi_to_bound_box(objects):
 
 
 class BackgroundPanel(bpy.types.Panel):
-    bl_idname = "AxisOmnisetBackgroundPanel"
+    bl_idname = "blenderset.background_panel"
     bl_label = "Background"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

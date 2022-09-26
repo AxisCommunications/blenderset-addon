@@ -39,7 +39,7 @@ class Scenario(bpy.types.Operator):
 
 
 class ScenarioPanel(bpy.types.Panel):
-    bl_idname = "AxisOmnisetScenarioPanel"
+    bl_idname = "blenderset.scenario_panel"
     bl_label = "Scenarios"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"

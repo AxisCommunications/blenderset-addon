@@ -39,7 +39,7 @@ class CharacterUpdate(bpy.types.Operator):
 
 
 class CharacterPanel(bpy.types.Panel):
-    bl_idname = "AxisOmnisetCharacterPanel"
+    bl_idname = "blenderset.character_panel"
     bl_label = "Character"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
