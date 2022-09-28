@@ -1,0 +1,37 @@
+{
+    "office_corridor.jpg":{
+        "lens": "LensDistM3057",
+        "mask_radius": 0.49,
+        "tags": ["Indoor", "Office", "Grenden", "Fisheye", "M3057"],
+        "camera_height": 271,
+        "original_img_dimension":[2048,2048],
+        "image_height": 1024,
+        "image_width": 1024,
+        "poly": [
+            [[140, 786], [129, 772], [155, 708], [255, 561], [315, 493], [392, 423], [529, 339], [672, 266], [729, 250], [788, 321], [880, 276], [915, 337], [821, 383], [852, 441], [834, 460], [834, 509], [817, 517], [802, 547], [802, 575], [765, 598], [766, 637], [774, 664], [835, 761], [858, 800], [837, 827], [767, 805], [711, 780], [562, 741], [548, 712], [480, 681], [395, 713], [363, 727], [334, 758], [319, 778], [269, 749], [251, 745]]
+        ]
+    },
+    "31879_0.jpg": {
+        "tags": ["Outdoor", "Nyhamnen", "partition:Test1"],
+        "lens": "3rd_eye_nyhamnen_camera1.json",
+        "camera_height": 1197,
+        "original_img_dimension": [2592, 1952],
+        "image_height": 1952,
+        "image_width": 2592,
+        "poly": [[
+            [150,1610],[150,100],[2440,100],[2440,1610]]
+        ]
+    },
+    "32180_0.jpg": {
+        "tags": ["Outdoor", "Nyhamnen"],
+        "lens": "3rd_eye_nyhamnen_camera1.json",
+        "camera_height": 1197,
+        "original_img_dimension": [2592, 1952],
+        "image_height": 1952,
+        "image_width": 2592,
+        "poly": [[
+            [150,1610],[150,100],[2440,100],[2440,1610]]
+        ]
+    }
+
+}

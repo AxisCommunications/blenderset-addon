@@ -1,0 +1,67 @@
+{
+    "_blocked": [],
+    "_comment": {
+        "gender": [
+          "male",
+          "female",
+          "other"
+        ],
+        "age_group": [
+          "toddler",
+          "child",
+          "teen",
+          "adult",
+          "senior"
+        ],
+        "skin_color": [
+          "light",
+          "medium",
+          "dark"
+        ],
+        "hair_color": [
+          "dark",
+          "light",
+          "blonde",
+          "none"
+        ],
+        "body_type": [
+          "slim",
+          "normal",
+          "overweight"
+        ],
+        "wearing_hard_hat": [
+          "yes",
+          "no"
+        ],
+        "big_hair": [
+          "yes",
+          "no"
+        ],
+        "clothes": [
+          ""
+        ],
+        "avatar_base": ""
+    },
+
+    "party-m-0001": {
+        "partition": ["Test1"],
+        "gender": "male",
+        "age_group": "adult",
+        "skin_color": "light",
+        "hair_color": "dark",
+        "body_type": "normal",
+        "wearing_hard_hat": "no",
+        "big_hair": "no",
+        "avatar_base": "MaleRobot"
+    },
+    "party-f-0001": {
+        "gender": "female",
+        "age_group": "adult",
+        "skin_color": "light",
+        "hair_color": "dark",
+        "body_type": "normal",
+        "wearing_hard_hat": "no",
+        "big_hair": "yes",
+        "avatar_base": "MaleRobot"
+    }
+}
