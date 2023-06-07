@@ -59,7 +59,10 @@ build/downloads/%:
 	@echo $@ must be downloaded manually
 	@exit 1
 
-build/downloads/_envoy: build/downloads/$(BLENDER_ARCHIVE) build/downloads/cc3_blender_tools-$(CC3_VERSION).zip build/downloads/Python-$(PYTHON_VERSION).0.tar.xz
+build/downloads:
+	-mkdir -p $@
+
+build/downloads/_envoy: build/downloads build/downloads/$(BLENDER_ARCHIVE) build/downloads/cc3_blender_tools-$(CC3_VERSION).zip build/downloads/Python-$(PYTHON_VERSION).0.tar.xz
 	@touch $@
 
 # TODO: Consider pointing blender to a config that is local to this project
