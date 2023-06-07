@@ -11,3 +11,4 @@ scikit-image
 shapely
 setuptools
 vi3o
+colorama
