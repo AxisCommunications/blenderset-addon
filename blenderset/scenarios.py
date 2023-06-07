@@ -188,6 +188,15 @@ class RealHighway(ComposedAssetGenerator):
             ),
         ]
 
+class ProjectiveSyntheticPedestrians(ComposedAssetGenerator):
+    def setup(self):
+        return [
+            GenerateSyntheticBackground(self.context),
+            GenerateProjectiveCamera(self.context, (2, 6)),
+            GenerateHdrDoomLight(self.context),
+            GenerateCharacter(self.context, 20, pose_tags="Standing"),
+        ]
+
 
 def _append_metadata_scenarios(module):
     source = AssetGenerator(None).metadata_dir / "scenarios.py"

@@ -14,12 +14,14 @@ from blenderset.render import PreviewRenderer, Renderer
 from blenderset.scenarios import (
     Nyhamnen,
     RealHighway,
+    ProjectiveSyntheticPedestrians,
 )
 
 
 def main():
-    root = Path('renders/nyhamnen')
+    # root = Path('renders/nyhamnen')
     # root = Path("renders/real_highway")
+    root = Path("renders/ProjectiveSyntheticPedestrians")
 
     renderer = PreviewRenderer(bpy.context, root)
     # renderer = Renderer(bpy.context, root)
@@ -35,6 +37,7 @@ def main():
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         gen = Nyhamnen(bpy.context, randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
+        gen = ProjectiveSyntheticPedestrians(bpy.context)
         gen.create()
         for perm_num in range(10):
             renderer.render(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
