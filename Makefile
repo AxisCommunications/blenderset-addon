@@ -77,10 +77,12 @@ $(BLENDER_DIR)/_envoy: build/downloads/_envoy
 	tar \
 		--no-same-permissions \
 		--no-same-owner \
-		-xf $(<D)/Python-$(PYTHON_VERSION).0.tar.xz  -C $(@D) Python-$(PYTHON_VERSION).0/Include/
+		-xf $(<D)/Python-$(PYTHON_VERSION).0.tar.xz  -C $(@D)
+	cd $(@D)/Python-$(PYTHON_VERSION).0 && ./configure
 	# Converting blender environment to venv...
 	-mkdir -p $(@D)/$(BLENDER_VERSION)/python/include/python3.10
 	mv $(@D)/Python-$(PYTHON_VERSION).0/Include/*.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/
+	mv $(@D)/Python-$(PYTHON_VERSION).0/pyconfig.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/
 	-mkdir $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/cpython/
 	mv $(@D)/Python-$(PYTHON_VERSION).0/Include/cpython/*.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/cpython/
 	mv $(@D)/$(BLENDER_VERSION)/python $(@D)/$(BLENDER_VERSION)/python.bak
