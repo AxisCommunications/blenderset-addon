@@ -1,7 +1,7 @@
-BLENDER_VERSION?=3.2
+BLENDER_VERSION?=4.0
 BLENDER_ARCHIVE?=blender-$(BLENDER_VERSION).2-linux-x64.tar.xz
 PYTHON_VERSION?=3.10
-CC3_VERSION?=1_1_6
+CC3_VERSION?=2_0_0
 
 BLENDER_DIR?=build/blender
 BLENDER?=$(BLENDER_DIR)/blender
@@ -79,6 +79,7 @@ $(BLENDER_DIR)/_envoy: build/downloads/_envoy
 		--no-same-owner \
 		-xf $(<D)/Python-$(PYTHON_VERSION).0.tar.xz  -C $(@D) Python-$(PYTHON_VERSION).0/Include/
 	# Converting blender environment to venv...
+	-mkdir -p $(@D)/$(BLENDER_VERSION)/python/include/python3.10
 	mv $(@D)/Python-$(PYTHON_VERSION).0/Include/*.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/
 	-mkdir $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/cpython/
 	mv $(@D)/Python-$(PYTHON_VERSION).0/Include/cpython/*.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/cpython/
