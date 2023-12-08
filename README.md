@@ -16,7 +16,8 @@ instance-segmentations and bounding boxes. Here are a few example of images prod
 * Create a root directory and make it cwd: `mkdir blenderset; cd blenderset`
 * Clone the repo: `git clone https://github.com/AxisCommunications/blenderset-addon.git`
 * Create asset and metdata directories: `mkdir blenderset-assets blenderset-metadata`
-* Install system-wide dependencies: `sudo apt install libopenexr-dev`
+* Install system-wide dependencies: `sudo apt install libopenexr-dev libimath-dev`
+* Make the addon directory your cwd: `cd blenderset-addon`
 * Create and initialize virtual environment: `. ./init_env.sh`
 * Install dependencies: `make sync_env`.
   Addons that crash will simply not show up in the GUI.

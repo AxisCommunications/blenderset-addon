@@ -14,12 +14,18 @@ if (metadata_dir / "animations_metadata.json").exists():
 else:
     pose_animations = {}
 
+print()
+print(f"Looking for avatar dirs in '{root}'...")
+
+count = 0
 for avatar in root.glob("*"):
+    print(f"Looking for *.fbx and *.Fbx files in '{avatar}'...")
     for fn in chain(avatar.glob("*.fbx"), avatar.glob("*.Fbx")):
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         bpy.ops.cc3.importer(filepath=str(fn), param="IMPORT_QUALITY")
         anim_names = list(bpy.data.actions.keys())
         for name in anim_names:
+            count += 1
             key = "_".join([avatar.name, fn.name.split(".")[0], name])
             ofn = key + ".blend"
             for ch in "/|\\":
@@ -53,3 +59,5 @@ for avatar in root.glob("*"):
 
                 with open(metadata_dir / "animations_metadata.json", "w") as fd:
                     json.dump(pose_animations, fd, indent=4)
+
+print(f"Found {count} animations!")
