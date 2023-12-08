@@ -232,7 +232,7 @@ class GenerateBackground(AssetGenerator):
         diffuse = nodes.new(type="ShaderNodeBsdfPrincipled")
         diffuse.location = (600, 0)
         diffuse.inputs["Roughness"].default_value = 0.75
-        diffuse.inputs["Specular"].default_value = 0.25
+        diffuse.inputs["Specular IOR Level"].default_value = 0.25
         coords = nodes.new(type="ShaderNodeTexCoord")
         coords.location = (0, 0)
         diffuseteximg = nodes.new(type="ShaderNodeTexImage")

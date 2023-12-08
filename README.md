@@ -17,6 +17,7 @@ instance-segmentations and bounding boxes. Here are a few example of images prod
 * Clone the repo: `git clone https://github.com/AxisCommunications/blenderset-addon.git`
 * Create asset and metdata directories: `mkdir blenderset-assets blenderset-metadata`
 * Install system-wide dependencies: `sudo apt install libopenexr-dev libimath-dev`
+* Make sure you have `ldconfig` in your path. If not: `sudo ln -s /sbin/ldconfig /usr/local/bin/`
 * Make the addon directory your cwd: `cd blenderset-addon`
 * Create and initialize virtual environment: `. ./init_env.sh`
 * Install dependencies: `make sync_env`.
