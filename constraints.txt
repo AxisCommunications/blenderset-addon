@@ -49,7 +49,7 @@ packaging==23.2
     #   scikit-image
 pathspec==0.11.2
     # via black
-pillow==10.1.0
+pillow==9.2.0
     # via
     #   -r requirements/misc.txt
     #   imageio
