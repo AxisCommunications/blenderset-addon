@@ -23,8 +23,8 @@ def main():
     # root = Path("renders/real_highway")
     root = Path("renders/ProjectiveSyntheticPedestrians")
 
-    renderer = PreviewRenderer(bpy.context, root)
-    # renderer = Renderer(bpy.context, root)
+    # renderer = PreviewRenderer(bpy.context, root)
+    renderer = Renderer(bpy.context, root)
 
     run_start = datetime.datetime.now()
     run_name = os.environ.get(
