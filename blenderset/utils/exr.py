@@ -79,6 +79,12 @@ class ExrFile:
 
         return objects, all_segmentations
 
+    def get_depth_image(self, name="View Layer.Depth.Z"):
+        assert self.header["channels"][name] == Imath.Channel(
+            Imath.PixelType(Imath.PixelType.FLOAT), 1, 1
+        )
+        return np.frombuffer(self.exr.channel(name), np.float32).reshape(self.shape).astype(np.float32)
+
     def get_rgb_image(self, name="View Layer.Combined"):
         img = np.zeros(self.shape + (3,), np.float32)
         for i, ch in enumerate("RGB"):

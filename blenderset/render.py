@@ -68,6 +68,9 @@ class Renderer:
         if head_mask is not None:
             imwrite(255 * head_mask.astype(np.uint8), str(out / "head_mask.png"))
 
+        depth = exr.get_depth_image()
+        np.save(out / "depth.npy", depth)
+
         layers_path.unlink()
 
         return out
