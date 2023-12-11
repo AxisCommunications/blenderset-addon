@@ -90,12 +90,21 @@ $(BLENDER_DIR)/_envoy: build/downloads/_envoy
 	rsync -rv $(@D)/$(BLENDER_VERSION)/python.bak/lib/ $(@D)/$(BLENDER_VERSION)/python/lib/
 	rsync -rv $(@D)/$(BLENDER_VERSION)/python.bak/include/ $(@D)/$(BLENDER_VERSION)/python/include/
 	# Installing first-party addon...
+	echo blenderset > $(@D)/addons_to_enable
 	ln -s `pwd`/blenderset $(@D)/$(BLENDER_VERSION)/scripts/addons/
 	# Installing third-party addons...
+	echo cc3_blender_tools-$(CC3_VERSION) >> $(@D)/addons_to_enable
 	unzip $(<D)/cc3_blender_tools-$(CC3_VERSION).zip -d $(@D)/$(BLENDER_VERSION)/scripts/addons/
-	# Remember to enable addons using the blender GUI
+	-for zip in custom_addons/*.zip; do unzip $$zip -d $(@D)/custom_addons/; done
+	-ls $(@D)/custom_addons >> $(@D)/addons_to_enable
+	-mv $(@D)/custom_addons/* $(@D)/$(BLENDER_VERSION)/scripts/addons/
+	# Install dependencies
 	ln -s $(BLENDER_VERSION) $(@D)/current
+	. build/blender/current/python/bin/activate && $(MAKE) sync_env
+	# Enable addons
+	$(BLENDER) -b --python enable_addons.py
 	@touch $@
+
 
 constraints.txt: $(wildcard requirements/*.txt)
 	pip-compile --strip-extras --allow-unsafe --output-file $@ $^ $(SILENT)
