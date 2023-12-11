@@ -12,7 +12,7 @@ import numpy as np
 from blenderset.utils.log import configure_logging
 from skimage import util
 from vi3o import debugview
-from vi3o.image import imread
+from vi3o.image import imread, ptpscale
 
 from blenderset.utils.lens import create_lens_from_json
 
@@ -35,6 +35,8 @@ class DebugViewer(debugview.DebugViewer):
             self.view(_read_seg(path), pause=True)
         elif self._view == "hmask":
             self.view(_read_hmask(path), pause=True)
+        elif self._view == "depth":
+            self.view(_read_depth(path), pause=True)
         else:
             assert False
 
@@ -49,6 +51,8 @@ class DebugViewer(debugview.DebugViewer):
             self._view = "seg"
         elif key == debugview.keysym.H:
             self._view = "hmask"
+        elif key == debugview.keysym.D:
+            self._view = "depth"
         else:
             super().on_key_press(key, modifiers)
         self._render()
@@ -62,6 +66,10 @@ def _read_seg(path: pathlib.Path):
 @functools.lru_cache(maxsize=2)
 def _read_hmask(path: pathlib.Path):
     return imread(path / "head_mask.png")
+
+@functools.lru_cache(maxsize=2)
+def _read_depth(path: pathlib.Path):
+    return ptpscale(np.load(path / "depth.npy"))
 
 
 @functools.lru_cache(maxsize=2)
