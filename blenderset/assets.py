@@ -90,7 +90,7 @@ class AssetGenerator:
         return MultiPolygon([Polygon(p) for p in walkable_polys])
 
     def random_position(self, roi):
-        if roi.bounds:
+        if roi.bounds and all(np.isfinite(roi.bounds)):
             min_x, min_y, max_x, max_y = roi.bounds
             while True:
                 random_point = Point(
