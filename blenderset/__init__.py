@@ -17,7 +17,7 @@ def _get_classes():
         SelectionToRoi,
         SyntheticBackground,
     )
-    from .bedlam import BedlamPanel, BedlamCreate, BedlamUpdate
+    from .bedlam import BedlamPanel, BedlamCreate, BedlamUpdate, BedlamCreateSoccer, BedlamCreateSoccerScene
     from .vehicle import VehiclePanel, VehicleCreate, VehicleUpdate
     from .character import CharacterPanel, CharacterCreate, CharacterUpdate
     from .light import LightCreate, LightPanel
