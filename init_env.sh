@@ -10,6 +10,4 @@ export PIP_CONSTRAINT
 
 if make build/blender/_envoy; then
   . build/blender/current/python/bin/activate
-  pip install pip
-  pip install --no-binary OpenEXR OpenEXR
 fi
