@@ -16,12 +16,14 @@ from blenderset.scenarios import (
     RealHighway,
     ProjectiveSyntheticPedestrians,
 )
+from blenderset.bedlam import SoccerScene
 
 
 def main():
     root = Path('renders/nyhamnen')
     # root = Path("renders/real_highway")
     # root = Path("renders/ProjectiveSyntheticPedestrians")
+    root = Path("renders/SoccerScene")
 
     renderer = PreviewRenderer(bpy.context, root)
     # renderer = Renderer(bpy.context, root)
@@ -35,12 +37,14 @@ def main():
 
     for scene_num in range(1000):
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
-        gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
+        # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
+        gen = SoccerScene(bpy.context)
         gen.create()
         for perm_num in range(10):
             renderer.render(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
+            return
             gen.update()
 
 
