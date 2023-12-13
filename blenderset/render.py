@@ -29,8 +29,8 @@ class Renderer:
         self.context.scene.cycles.device = self.device
         self.context.scene.render.image_settings.file_format = "OPEN_EXR_MULTILAYER"
         self.context.scene.render.image_settings.color_mode = "RGB"
-        self.context.scene.view_layers["View Layer"].use_pass_cryptomatte_asset = True
-        self.context.scene.view_layers["View Layer"].use_pass_z = True
+        self.context.window.view_layer.use_pass_cryptomatte_asset = True
+        self.context.window.view_layer.use_pass_z = True
         self.context.scene.render.image_settings.color_depth = "32"
 
     def render(self, asset_generator, out_dir=None):
