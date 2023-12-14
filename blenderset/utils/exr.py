@@ -29,6 +29,8 @@ class ExrFile:
         for _, crypto in cryptomatte.items():
             root_name = crypto["name"].decode("utf")
             p = root_name + "00.r"
+            if p not in self.header["channels"]:
+                p = root_name + "00.R"
             assert self.header["channels"][p] == Imath.Channel(
                 Imath.PixelType(Imath.PixelType.FLOAT), 1, 1
             )
