@@ -25,7 +25,7 @@ def main():
     # root = Path("renders/ProjectiveSyntheticPedestrians")
     root = Path("renders/SoccerScene")
 
-    renderer = PreviewRenderer(bpy.context, root)
+    renderer = PreviewRenderer(bpy.context, root, save_blend=True)
     # renderer = Renderer(bpy.context, root)
 
     run_start = datetime.datetime.now()
@@ -51,3 +51,5 @@ def main():
 if __name__ == "__main__":
     configure_logging()
     main()
+    # os.system('xzgv `ls -trh renders/SoccerScene/*/rgb.png | tail -1`')
+    os.system('./build/blender/blender `ls -trh renders/SoccerScene/*/scene.blend | tail -1`')
