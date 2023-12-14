@@ -44,12 +44,13 @@ def main():
         gen.create()
         for perm_num in range(10):
             renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
-            return
             gen.update()
+        return
+
 
 
 if __name__ == "__main__":
     configure_logging()
     main()
     # os.system('xzgv `ls -trh renders/SoccerScene/*/rgb.png | tail -1`')
-    os.system('./build/blender/blender `ls -trh renders/SoccerScene/*/scene.blend | tail -1`')
+    # os.system('./build/blender/blender `ls -trh renders/SoccerScene/*/scene.blend | tail -1`')
