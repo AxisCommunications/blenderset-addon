@@ -43,7 +43,7 @@ def main():
         gen = SoccerScene(bpy.context)
         gen.create()
         for perm_num in range(10):
-            renderer.render(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
+            renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
             return
             gen.update()
 

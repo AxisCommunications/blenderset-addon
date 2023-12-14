@@ -34,6 +34,17 @@ class Renderer:
         self.context.window.view_layer.use_pass_z = True
         self.context.scene.render.image_settings.color_depth = "32"
 
+    def render_all_cameras(self, asset_generator, out_dir=None):
+        if out_dir is None:
+            out_dir = str(uuid.uuid1())
+        for cam in bpy.context.view_layer.objects:
+            if cam.type == 'CAMERA':
+                bpy.context.scene.camera = cam
+                composer_nodes = bpy.context.scene.node_tree.nodes
+                if 'blenderset.Background' in composer_nodes:
+                    composer_nodes['blenderset.Background'].image = cam.data.background_images[0].image
+                self.render(asset_generator, out_dir + '/' + cam.name)
+
     def render(self, asset_generator, out_dir=None):
         self.setup()
         asset_generator.setup_render()
