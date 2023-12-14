@@ -16,9 +16,10 @@ class Renderer:
     use_denoising = True
     device = "GPU"
 
-    def __init__(self, context, output_root):
+    def __init__(self, context, output_root, save_blend=False):
         self.context = context
         self.output_root = Path(output_root)
+        self.save_blend = save_blend
 
     def setup(self):
         self.context.scene.render.engine = "CYCLES"
@@ -56,6 +57,9 @@ class Renderer:
         camera_matrix, lens = get_current_camera()
         np.save(out / "camera_matrix.npy", camera_matrix)
         lens.save_json(out / "lens.json")
+
+        if self.save_blend:
+            bpy.ops.wm.save_as_mainfile(filepath=str(out / "scene.blend"))
 
         exr = ExrFile(layers_path)
         objects, segmentations = exr.get_objects()
