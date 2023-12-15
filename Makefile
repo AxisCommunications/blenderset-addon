@@ -112,7 +112,7 @@ constraints.txt: $(wildcard requirements/*.txt)
 	pip-compile --strip-extras --allow-unsafe --output-file $@ $^ $(SILENT)
 
 docker-build:
-	docker build -t blenderset .
+	DOCKER_BUILDKIT=0 docker build -t blenderset .
 
 docker-run: docker-run-run
 k8s-run: k8s-run-run

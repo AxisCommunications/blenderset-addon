@@ -7,6 +7,9 @@ import random
 from pathlib import Path
 from random import randint
 from socket import gethostname
+from time import time
+
+np.set_printoptions(threshold=np.inf)
 
 import bpy
 
@@ -35,16 +38,24 @@ def main():
     random.seed(run_name)
     np.random.seed(random.randrange(0, 2 ** 32))
 
+    timeing = []
     for scene_num in range(1000):
+        t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
         gen = SoccerScene(bpy.context)
+        t1 = time()
         gen.create()
+        t2 = time()
         for perm_num in range(10):
             renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
             gen.update()
+        t3 = time()
+        timeing.append([t1-t0, t2-t1, t3-t2])
+        print(timeing)
+        print(np.array(timeing))
         return
 
 
