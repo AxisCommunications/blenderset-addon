@@ -1,5 +1,6 @@
 # FROM nvidia/cudagl:10.1-base-ubuntu18.04
-FROM nvcr.io/nvidia/cudagl:11.4.2-runtime-ubuntu20.04
+# FROM nvidia/cuda:12.3.1-runtime-ubuntu20.04
+FROM nvidia/cuda:11.6.1-runtime-ubuntu20.04
 
 # Enviorment variables
 ENV DEBIAN_FRONTEND noninteractive
