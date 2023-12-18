@@ -16,10 +16,11 @@ class Renderer:
     use_denoising = True
     device = "GPU"
 
-    def __init__(self, context, output_root, save_blend=False):
+    def __init__(self, context, output_root, save_blend=False, save_exr=False):
         self.context = context
         self.output_root = Path(output_root)
         self.save_blend = save_blend
+        self.save_exr = save_exr
 
     def setup(self):
         self.context.scene.render.engine = "CYCLES"
@@ -86,7 +87,8 @@ class Renderer:
         depth = exr.get_depth_image()
         np.save(out / "depth.npy", depth)
 
-        layers_path.unlink()
+        if not self.save_exr:
+            layers_path.unlink()
 
         return out
 

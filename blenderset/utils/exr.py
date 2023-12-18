@@ -59,6 +59,7 @@ class ExrFile:
                     )
                     obj["name"] = name
                     objects[root_name + "/" + name] = obj
+
                     # Adding the head bounding box using the masks:
                     if cls == "human" and head_mask is not None:
                         combined_mask = np.multiply(mask, head_mask)
@@ -78,6 +79,19 @@ class ExrFile:
                                     int(head_bbox_max[0]),
                                 ]
                             )
+
+                    # 3D Bounding box
+                    bounds = []
+                    for o in list(bpy.data.objects[name].children_recursive) + [bpy.data.objects[name]]:
+                        bound_box = o.bound_box
+                        bbox = np.column_stack([np.array(bound_box), np.ones(len(bound_box))]) @ np.array(o.matrix_world).T
+                        bounds.append(bbox)
+                    bounds = np.row_stack(bounds)
+                    x0, x1 = bounds[:,0].min(), bounds[:,0].max()
+                    y0, y1 = bounds[:,1].min(), bounds[:,1].max()
+                    z0, z1 = bounds[:,2].min(), bounds[:,2].max()
+                    bbox = [(x0, y0, z0), (x0, y0, z1), (x0, y1, z1), (x0, y1, z0), (x1, y0, z0), (x1, y0, z1), (x1, y1, z1), (x1, y1, z0)]
+                    obj["bounding_3d"] = bbox
 
         return objects, all_segmentations
 
