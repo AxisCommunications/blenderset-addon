@@ -117,8 +117,19 @@ def _read_rgb_with_overlay(path: pathlib.Path):
                 x, y, z, _ = camera_matrix @ (x, y, z, 1)
                 u, v = lens.world_to_image([x, y, z])[0]
                 cv2.circle(img, (int(u), int(v)), 4, (0, 0, 255), 1)
+
+        if 'bounding_3d' in obj:
+            wpkt = np.column_stack([obj['bounding_3d'], np.ones(len(obj['bounding_3d']))]) @ camera_matrix.T
+            ipkt = lens.world_to_image(wpkt[:,:3]).astype(int)
+            for i, j in box_lines:
+                cv2.line(img, ipkt[i], ipkt[j], (255,255,0), 1)
     return img
 
+box_lines = [
+    (0, 1), (1, 2), (2, 3), (3, 0),
+    (4, 5), (5, 6), (6, 7), (7, 4),
+    (0, 4), (1, 5), (2, 6), (3, 7),
+]
 
 def show_many(*paths: Union[str, pathlib.Path]):
     DebugViewer([pathlib.Path(path) for path in paths])
