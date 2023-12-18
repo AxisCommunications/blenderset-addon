@@ -60,7 +60,7 @@ class ExrFile:
                     obj["name"] = name
                     objects[root_name + "/" + name] = obj
                     # Adding the head bounding box using the masks:
-                    if cls == "human":
+                    if cls == "human" and head_mask is not None:
                         combined_mask = np.multiply(mask, head_mask)
                         img = 255 * combined_mask.astype(np.uint8)
                         kernel = np.ones((5, 5), np.uint8)  # 2,2
