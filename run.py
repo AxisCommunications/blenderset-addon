@@ -36,6 +36,7 @@ def main():
     run_name = os.environ.get(
         "BLENDERSET_RUN_NAME", run_start.strftime("%Y%m%d_%H%M%S") + "_" + gethostname()
     )
+    # run_name = "20231218_135454_hapad"
     random.seed(run_name)
     np.random.seed(random.randrange(0, 2 ** 32))
 
