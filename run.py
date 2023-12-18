@@ -1,5 +1,6 @@
 import numpy as np
 from blenderset.utils.log import configure_logging
+import sys
 
 import datetime
 import os
@@ -23,13 +24,13 @@ from blenderset.bedlam import SoccerScene
 
 
 def main():
-    root = Path('renders/nyhamnen')
+    # root = Path('renders/nyhamnen')
     # root = Path("renders/real_highway")
     # root = Path("renders/ProjectiveSyntheticPedestrians")
     root = Path("renders/SoccerScene")
 
-    renderer = PreviewRenderer(bpy.context, root, save_blend=True)
-    # renderer = Renderer(bpy.context, root)
+    # renderer = PreviewRenderer(bpy.context, root, save_blend=True)
+    renderer = Renderer(bpy.context, root)
 
     run_start = datetime.datetime.now()
     run_name = os.environ.get(
@@ -39,24 +40,25 @@ def main():
     np.random.seed(random.randrange(0, 2 ** 32))
 
     timeing = []
-    for scene_num in range(1000):
+    for scene_num in range(1):
         t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
-        gen = SoccerScene(bpy.context)
+        gen = SoccerScene(bpy.context, int(sys.argv[-1]))
         t1 = time()
         gen.create()
         t2 = time()
-        for perm_num in range(10):
+        for perm_num in range(2):
             renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
+            t3 = time()
             gen.update()
-        t3 = time()
-        timeing.append([t1-t0, t2-t1, t3-t2])
-        print(timeing)
-        print(np.array(timeing))
-        return
+            t4 = time()
+            timeing.append([t1-t0, t2-t1, t3-t2, t4-t3])
+            print(timeing)
+            print(np.array(timeing))
+            return
 
 
 

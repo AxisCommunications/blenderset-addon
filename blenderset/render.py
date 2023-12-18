@@ -26,7 +26,7 @@ class Renderer:
         self.context.scene.cycles.samples = self.samples
         self.context.scene.cycles.use_denoising = self.use_denoising
         self.context.scene.cycles.use_adaptive_sampling = True
-        self.context.scene.cycles.adaptive_threshold = 0.005
+        self.context.scene.cycles.adaptive_threshold = 0.01
         self.context.scene.cycles.device = self.device
         self.context.scene.render.image_settings.file_format = "OPEN_EXR_MULTILAYER"
         self.context.scene.render.image_settings.color_mode = "RGB"
