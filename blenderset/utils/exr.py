@@ -83,15 +83,27 @@ class ExrFile:
                     # 3D Bounding box
                     bounds = []
                     for o in list(bpy.data.objects[name].children_recursive) + [bpy.data.objects[name]]:
-                        bound_box = o.bound_box
-                        bbox = np.column_stack([np.array(bound_box), np.ones(len(bound_box))]) @ np.array(o.matrix_world).T
-                        bounds.append(bbox)
+                        if o.type == 'MESH':
+                            bound_box = o.bound_box
+                            bbox = np.column_stack([np.array(bound_box), np.ones(len(bound_box))]) @ np.array(o.matrix_world).T
+                            bounds.append(bbox)
                     bounds = np.row_stack(bounds)
                     x0, x1 = bounds[:,0].min(), bounds[:,0].max()
                     y0, y1 = bounds[:,1].min(), bounds[:,1].max()
                     z0, z1 = bounds[:,2].min(), bounds[:,2].max()
                     bbox = [(x0, y0, z0), (x0, y0, z1), (x0, y1, z1), (x0, y1, z0), (x1, y0, z0), (x1, y0, z1), (x1, y1, z1), (x1, y1, z0)]
                     obj["bounding_3d"] = bbox
+
+                    # SMPL Shape keys
+                    for o in bpy.data.objects[name].children_recursive:
+                        shape_keys = o.data.shape_keys
+                        if shape_keys is not None and len(shape_keys.key_blocks) >= 10 and bpy.context.object.name.lower().startswith('smpl'):
+                            obj["smpl_shape"] = [shape_keys.key_blocks[f'Shape{i:03d}'].value for i in range(10)]
+                            obj["smpl_matrix_world"] = np.array(bpy.data.objects[name].matrix_world)
+                            break
+
+                    # Metadata
+                    obj["metadata"] = {k[11:]:v for k, v in bpy.data.objects[name].items() if k.startswith('blenderset.') and isinstance(v, (str, int, float))}
 
         return objects, all_segmentations
 
