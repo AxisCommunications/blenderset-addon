@@ -29,8 +29,8 @@ def main():
     # root = Path("renders/ProjectiveSyntheticPedestrians")
     root = Path("renders/SoccerScene")
 
-    renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True)
-    # renderer = Renderer(bpy.context, root)
+    # renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True)
+    renderer = Renderer(bpy.context, root)
 
     run_start = datetime.datetime.now()
     run_name = os.environ.get(
@@ -48,7 +48,7 @@ def main():
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
         # gen = SoccerScene(bpy.context, 2, 2) #int(sys.argv[-1]))
-        gen = SoccerSceneInPlay(bpy.context)
+        gen = SoccerSceneInPlay(bpy.context) #, nbr_of_players=2)
         t1 = time()
         gen.create()
         t2 = time()
