@@ -41,7 +41,7 @@ def main():
     np.random.seed(random.randrange(0, 2 ** 32))
 
     timeing = []
-    for scene_num in range(1):
+    for scene_num in range(10):
         t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
@@ -52,7 +52,7 @@ def main():
         t1 = time()
         gen.create()
         t2 = time()
-        for perm_num in range(1):
+        for perm_num in range(10):
             renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
             t3 = time()
             gen.update()

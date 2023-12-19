@@ -69,7 +69,9 @@ def _read_hmask(path: pathlib.Path):
 
 @functools.lru_cache(maxsize=2)
 def _read_depth(path: pathlib.Path):
-    return ptpscale(np.load(path / "depth.npy"))
+    depth = np.load(path / "depth.npy")
+    depth[depth>50] = 50
+    return ptpscale(depth)
 
 
 @functools.lru_cache(maxsize=2)
