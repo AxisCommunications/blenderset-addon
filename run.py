@@ -20,7 +20,7 @@ from blenderset.scenarios import (
     RealHighway,
     ProjectiveSyntheticPedestrians,
 )
-from blenderset.bedlam import SoccerScene
+from blenderset.bedlam import SoccerScene, SoccerSceneInPlay
 
 
 def main():
@@ -41,13 +41,14 @@ def main():
     np.random.seed(random.randrange(0, 2 ** 32))
 
     timeing = []
-    for scene_num in range(20):
+    for scene_num in range(1):
         t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
-        gen = SoccerScene(bpy.context, 1) #int(sys.argv[-1]))
+        # gen = SoccerScene(bpy.context, 2, 2) #int(sys.argv[-1]))
+        gen = SoccerSceneInPlay(bpy.context)
         t1 = time()
         gen.create()
         t2 = time()
