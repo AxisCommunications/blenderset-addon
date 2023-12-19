@@ -41,25 +41,23 @@ def main():
     np.random.seed(random.randrange(0, 2 ** 32))
 
     timeing = []
-    for scene_num in range(1):
+    for scene_num in range(20):
         t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
-        gen = SoccerScene(bpy.context, 10) #int(sys.argv[-1]))
+        gen = SoccerScene(bpy.context, 1) #int(sys.argv[-1]))
         t1 = time()
         gen.create()
         t2 = time()
-        for perm_num in range(2):
+        for perm_num in range(1):
             renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
             t3 = time()
             gen.update()
             t4 = time()
             timeing.append([t1-t0, t2-t1, t3-t2, t4-t3])
             print(timeing)
-            print(np.array(timeing))
-            return
 
 
 
