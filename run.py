@@ -59,8 +59,9 @@ def main():
             t3 = time()
             gen.update()
             t4 = time()
-            timeing.append([t1-t0, t2-t1, t3-t2, t4-t3])
-            print(timeing)
+            if perm_num == 0:
+                timeing.append([t1-t0, t2-t1, t3-t2, t4-t3])
+                print('Timing', timeing)
 
 
 
