@@ -5,6 +5,7 @@ import json
 import logging
 import pathlib
 from typing import Union
+import gzip
 
 import cv2
 import fire
@@ -60,8 +61,12 @@ class DebugViewer(debugview.DebugViewer):
 
 @functools.lru_cache(maxsize=2)
 def _read_seg(path: pathlib.Path):
-    return util.img_as_ubyte(np.load(path / "segmentations.npy"))
-
+    if (path / "segmentations.npy").exists():
+        segmentations = np.load(path / "segmentations.npy")
+    else:
+        with gzip.GzipFile(path / "segmentations.npy.gz", "r") as fd:
+            segmentations = np.load(fd)
+    return util.img_as_ubyte(segmentations)
 
 @functools.lru_cache(maxsize=2)
 def _read_hmask(path: pathlib.Path):
@@ -69,14 +74,21 @@ def _read_hmask(path: pathlib.Path):
 
 @functools.lru_cache(maxsize=2)
 def _read_depth(path: pathlib.Path):
-    depth = np.load(path / "depth.npy")
+    if (path / "depth.npy").exists():
+        depth = np.load(path / "depth.npy")
+    else:
+        with gzip.GzipFile(path / "depth.npy.gz", "r") as fd:
+            depth = np.load(fd)
     depth[depth>50] = 50
     return ptpscale(depth)
 
 
 @functools.lru_cache(maxsize=2)
 def _read_rgb_with_overlay(path: pathlib.Path):
-    img = imread(path / "rgb.png")
+    if (path / "rgb.png").exists():
+        img = imread(path / "rgb.png")
+    else:
+        img = imread(path / "rgb.jpg")
     objects = json.load(open(path / "objects.json"))
 
     lens = create_lens_from_json(img.shape, path / "lens.json")

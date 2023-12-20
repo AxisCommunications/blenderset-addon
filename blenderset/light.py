@@ -58,6 +58,7 @@ class GenerateLightPlane(AssetGenerator):
 class GenerateHdrDoomLight(AssetGenerator):
     def create(self):
         self.hdrs = list((self.root / "skys").glob("*.hdr")) + list((self.root / "skys").glob("*.exr"))
+        self.update()
 
     def update(self):
         load_HDR(str(choice(self.hdrs)), "DoomLight")
