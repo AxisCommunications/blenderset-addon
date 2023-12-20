@@ -7,6 +7,8 @@ import bpy
 
 
 class AssetGenerator:
+    override_roi = None
+
     def __init__(self, context):
         self.context = context
         self.created_objects = []
