@@ -54,10 +54,10 @@ class Renderer:
         out = self.output_root / out_dir
         out.mkdir(parents=True, exist_ok=True)
 
-        roi = asset_generator.get_roi()
+        roi = asset_generator.get_all_proprty_values("blenderset.walkable_roi")
         scene_info = dict(
-            roi = [list(p.boundary.coords) for p in roi.geoms],
-            background_collected_from_game = self.get_all_proprty_values('blenderset.collected_from'),
+            roi = [[list(p) for p in poly] for poly in roi],
+            background_collected_from_game = asset_generator.get_all_proprty_values('blenderset.collected_from'),
         )
         with open(out / "scene_info.json", "w") as fd:
             json.dump(scene_info, fd)

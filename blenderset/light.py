@@ -66,4 +66,4 @@ class GenerateHdrDoomLight(AssetGenerator):
             warn(f"no skies found in {sky_path.resolve()}")
 
     def update(self):
-        pass
+        load_HDR(str(choice(self.hdrs)), "DoomLight")
