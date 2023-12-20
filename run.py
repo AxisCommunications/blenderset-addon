@@ -48,7 +48,7 @@ def main():
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
         # gen = SoccerScene(bpy.context, 2, 2) #int(sys.argv[-1]))
-        gen = SoccerSceneInPlay(bpy.context, 0, 0)
+        gen = SoccerSceneInPlay(bpy.context)
         t1 = time()
         gen.create()
         t2 = time()
