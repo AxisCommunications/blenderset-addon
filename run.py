@@ -29,7 +29,7 @@ def main():
     # root = Path("renders/ProjectiveSyntheticPedestrians")
     root = Path("renders/SoccerScene")
 
-    renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True)
+    renderer = PreviewRenderer(bpy.context, root) #, save_blend=True, save_exr=True)
     # renderer = Renderer(bpy.context, root)
 
     run_start = datetime.datetime.now()

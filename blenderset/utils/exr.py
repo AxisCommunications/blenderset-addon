@@ -88,11 +88,9 @@ class ExrFile:
                     # SMPL Shape keys
                     for o in bpy.data.objects[name].children_recursive:
                         shape_keys = o.data.shape_keys
-                        print("SMPL", o, shape_keys)
                         if shape_keys is not None and len(shape_keys.key_blocks) >= 10 and o.name.lower().startswith('smpl'):
                             obj["smpl_shape"] = [shape_keys.key_blocks[f'Shape{i:03d}'].value for i in range(10)]
                             obj["smpl_matrix_world"] = np.array(bpy.data.objects[name].matrix_world).tolist()
-                            print(obj["smpl_shape"])
                             break
 
                     # Metadata

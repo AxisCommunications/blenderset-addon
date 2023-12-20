@@ -5,6 +5,7 @@ from pathlib import Path
 import bpy
 import numpy as np
 from vi3o.image import imwrite
+import gzip
 
 from blenderset.camera import get_current_camera
 from blenderset.keypoints import add_object_keypoints
@@ -68,9 +69,9 @@ class Renderer:
         self.context.view_layer.update()
         bpy.ops.render.render(write_still=True)
 
-        self.context.scene.render.image_settings.file_format = "PNG"
+        self.context.scene.render.image_settings.file_format = "JPEG"
         self.context.scene.render.image_settings.color_depth = "8"
-        bpy.data.images["Render Result"].save_render(str(out / "rgb.png"))
+        bpy.data.images["Render Result"].save_render(str(out / "rgb.jpg"))
 
         camera_matrix, lens = get_current_camera()
         np.save(out / "camera_matrix.npy", camera_matrix)
@@ -84,7 +85,8 @@ class Renderer:
         objects, segmentations = exr.get_objects()
         add_object_keypoints(objects, camera_matrix, lens)
         assert len(segmentations) == 1
-        np.save(out / "segmentations.npy", segmentations[0])
+        with gzip.GzipFile(out / "segmentations.npy.gz", "w") as fd:
+            np.save(fd, segmentations[0])
         with (out / "objects.json").open("w") as fd:
             json.dump(objects, fd)
         head_mask = exr.get_head_mask()
@@ -92,7 +94,8 @@ class Renderer:
             imwrite(255 * head_mask.astype(np.uint8), str(out / "head_mask.png"))
 
         depth = exr.get_depth_image()
-        np.save(out / "depth.npy", depth)
+        with gzip.GzipFile(out / "depth.npy.gz", "w") as fd:
+            np.save(fd, depth)
 
         if not self.save_exr:
             layers_path.unlink()
