@@ -54,8 +54,14 @@ class Renderer:
         out = self.output_root / out_dir
         out.mkdir(parents=True, exist_ok=True)
 
-        # bpy.ops.file.make_paths_absolute()
-        # bpy.ops.wm.save_as_mainfile(filepath=str(out / "scene.blend"))
+        roi = asset_generator.get_roi()
+        scene_info = dict(
+            roi = [list(p.boundary.coords) for p in roi.geoms],
+            background_collected_from_game = self.get_all_proprty_values('blenderset.collected_from'),
+        )
+        with open(out / "scene_info.json", "w") as fd:
+            json.dump(scene_info, fd)
+
         layers_path = out / "layers.exr"
         self.context.scene.render.filepath = str(layers_path)
 
@@ -71,6 +77,7 @@ class Renderer:
         lens.save_json(out / "lens.json")
 
         if self.save_blend:
+            bpy.ops.file.make_paths_absolute()
             bpy.ops.wm.save_as_mainfile(filepath=str(out / "scene.blend"))
 
         exr = ExrFile(layers_path)
