@@ -114,6 +114,10 @@ constraints.txt: $(wildcard requirements/*.txt)
 docker-build:
 	docker build -t blenderset .
 
+docker-push: docker-build
+	docker tag blenderset hakanardo/blenderset
+	docker push hakanardo/blenderset
+
 docker-run: docker-run-run
 k8s-run: k8s-run-run
 

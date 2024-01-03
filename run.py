@@ -28,7 +28,8 @@ def main():
     # root = Path('renders/nyhamnen')
     # root = Path("renders/real_highway")
     # root = Path("renders/ProjectiveSyntheticPedestrians")
-    root = Path("renders/SoccerScene")
+    # root = Path("renders/SoccerScene")
+    root = Path("renders/SoccerCrowd")
 
     # renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True)
     renderer = Renderer(bpy.context, root)
@@ -45,18 +46,18 @@ def main():
     np.random.seed(random.randrange(0, 2 ** 32))
 
     timeing = []
-    for scene_num in range(10):
+    for scene_num in range(1):
         t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
-        # gen = SoccerScene(bpy.context, 2, 2) #int(sys.argv[-1]))
-        gen = SoccerSceneInPlay(bpy.context)
+        gen = SoccerScene(bpy.context, 2, 2) #int(sys.argv[-1]))
+        # gen = SoccerSceneInPlay(bpy.context)
         t1 = time()
         gen.create()
         t2 = time()
-        for perm_num in range(10):
+        for perm_num in range(2):
             with render_lock:
                 renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
             t3 = time()
