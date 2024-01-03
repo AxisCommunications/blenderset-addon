@@ -41,6 +41,7 @@ def main():
     )
     if 'SLURM_JOBID' in os.environ:
         run_name += '_' + os.environ['SLURM_JOBID']
+    run_name += "_" + str(os.getpid())
     # run_name = "20231218_135454_hapad"
     random.seed(run_name)
     np.random.seed(random.randrange(0, 2 ** 32))
@@ -52,7 +53,7 @@ def main():
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
         # gen = RealHighway(bpy.context, randint(20, 30))
         # gen = ProjectiveSyntheticPedestrians(bpy.context)
-        gen = SoccerScene(bpy.context, 2, 2) #int(sys.argv[-1]))
+        gen = SoccerScene(bpy.context, int(sys.argv[-1]), int(sys.argv[-1]))
         # gen = SoccerSceneInPlay(bpy.context)
         t1 = time()
         gen.create()
