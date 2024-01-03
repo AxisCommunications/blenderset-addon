@@ -26,16 +26,19 @@ vinterspel:
 delfinensynth:
 	$(BLENDER) delfinensynth.blend
 
+dual-%:
+	$(MAKE) $* & $(MAKE) $*
+
 run: run-run
 
 run-%:
 	$(BLENDER) -b --python $*.py
 
 run-cuda:
-	$(BLENDER) -b --python run.py -- --cycles-device CUDA
+	$(BLENDER) -b --python run.py -- --cycles-device CUDA $(EXTRA_ARG)
 
 run-optix:
-	$(BLENDER) -b --python run.py -- --cycles-device OPTIX
+	$(BLENDER) -b --python run.py -- --cycles-device OPTIX $(EXTRA_ARG)
 
 run-forever-%:
 	while true; do $(MAKE) run-$*; sleep 1; done
