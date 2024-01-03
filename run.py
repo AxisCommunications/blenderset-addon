@@ -9,6 +9,7 @@ from pathlib import Path
 from random import randint
 from socket import gethostname
 from time import time
+from filelock import FileLock
 
 np.set_printoptions(threshold=np.inf)
 
@@ -32,6 +33,7 @@ def main():
     # renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True)
     renderer = Renderer(bpy.context, root)
 
+    render_lock = FileLock("/tmp/blenderset_render.lock")
     run_start = datetime.datetime.now()
     run_name = os.environ.get(
         "BLENDERSET_RUN_NAME", run_start.strftime("%Y%m%d_%H%M%S") + "_" + gethostname()
@@ -55,7 +57,8 @@ def main():
         gen.create()
         t2 = time()
         for perm_num in range(10):
-            renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
+            with render_lock:
+                renderer.render_all_cameras(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
             t3 = time()
             gen.update()
             t4 = time()
