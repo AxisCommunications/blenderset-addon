@@ -26,8 +26,11 @@ vinterspel:
 delfinensynth:
 	$(BLENDER) delfinensynth.blend
 
-dual-%:
-	$(MAKE) $* & $(MAKE) $*
+double-%:
+	$(MAKE) $* & $(MAKE) $*; wait
+
+tripple-%:
+	$(MAKE) $* & $(MAKE) $*; wait
 
 run: run-run
 
