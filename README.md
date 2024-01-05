@@ -13,14 +13,21 @@ instance-segmentations and bounding boxes. Here are a few example of images prod
 
 ## Installation
 
-* Create a root directory and make it cwd: `mkdir blenderset; cd blenderset`
+* Create a root directory and enter it: `mkdir blenderset; cd blenderset`
 * Clone the repo: `git clone https://github.com/AxisCommunications/blenderset-addon.git`
 * Create asset and metdata directories: `mkdir blenderset-assets blenderset-metadata`
 * Install system-wide dependencies: `sudo apt install libopenexr-dev libimath-dev`
-* Make the addon directory your cwd: `cd blenderset-addon`
-* Create and initialize virtual environment: `. ./init_env.sh`
+* Enter blenderset-addons `cd blenderset-addons`
+* Create and initialize virtual environment: `. ./init_env.sh` (you might have to make
+  sure that the file is executable with, for example `chmod 775 init_env.sh`)
 * Install dependencies: `make sync_env`.
   Addons that crash will simply not show up in the GUI.
+  If some packages can't be installed you can install them manually by running
+  `sudo apt install apt-file` and then `sudo apt-file update`, and then you can seach for
+  the missing packages using `apt-file search xxx` where xxx is the missing package.
+  The missing package can then be installed by eg.
+  `sudo apt install libavcodec-dev`
+  `sudo apt install libswscale-dev`
 * Enable the addons by either
    - `make run-enable_addons` (will fail before dependencies have been installed), or
    - using the blender GUI

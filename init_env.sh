@@ -8,6 +8,7 @@
 PIP_CONSTRAINT=`pwd`/constraints.txt
 export PIP_CONSTRAINT
 
+mkdir -p build/downloads
 if make build/blender/_envoy; then
   . build/blender/current/python/bin/activate
   pip install pip
