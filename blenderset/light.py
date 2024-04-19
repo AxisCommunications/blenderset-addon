@@ -1,6 +1,7 @@
 import inspect
 from pathlib import Path
 from random import choice
+from warnings import warn
 
 import bpy
 
@@ -57,8 +58,12 @@ class GenerateLightPlane(AssetGenerator):
 
 class GenerateHdrDoomLight(AssetGenerator):
     def create(self):
-        hdrs = list((self.root / "skys").glob("*.hdr"))
-        load_HDR(str(choice(hdrs)), "DoomLight")
+        sky_path = (self.root / "skys")
+        hdrs = list(sky_path.glob("*.hdr"))
+        if hdrs:
+            load_HDR(str(choice(hdrs)), "DoomLight")
+        else:
+            warn(f"no skies found in {sky_path.resolve()}")
 
     def update(self):
         pass

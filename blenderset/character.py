@@ -63,8 +63,8 @@ class GenerateCharacter(AssetGenerator):
         self.override_roi = roi
 
         models = list(self.root.glob("*/*.[fF]bx"))
-        fn = self.metadata_dir / "character_metadata.json"
-        character_data = json.load(fn.open())
+        character_metadata_path = self.metadata_dir / "character_metadata.json"
+        character_data = json.load(character_metadata_path.open())
         blocked = set(character_data['_blocked'])
         model_data = {}
         for fn in models:
@@ -97,10 +97,22 @@ class GenerateCharacter(AssetGenerator):
                 for val in values:
                     entry["tags"].append(t + ":" + val)
             model_data[fn] = entry
-        self.model_data = filter_by_tags(model_data, tags)
+        if not model_data:
+            raise FileNotFoundError(f"no character models (.fbx files) specified in {character_metadata_path.resolve()} found in {self.root.resolve()}")
 
-        animation_data = json.load(open(self.metadata_dir / "animations_metadata.json"))
+        self.model_data = filter_by_tags(model_data, tags)
+        if not self.model_data:
+            raise FileNotFoundError(f"no characters matched the tags: {tags}")
+
+        animation_metadata_path = self.metadata_dir / "animations_metadata.json"
+        animation_data = json.load(open(animation_metadata_path))
+        if not animation_data:
+            raise FileNotFoundError(f"no animations specified in {animation_metadata_path.resolve()} found in {self.animation_root.resolve()}")
+
         self.animation_data = filter_by_tags(animation_data, pose_tags)
+        if not self.animation_data:
+            raise FileNotFoundError(f"no animations matched the tags: {pose_tags}")
+
         self.animation_names = defaultdict(list)
         self.animation_lengths = defaultdict(list)
         for key, entry in self.animation_data.items():
@@ -127,7 +139,6 @@ class GenerateCharacter(AssetGenerator):
             self.claim_object(obj)
             obj.animation_data_clear()
             obj["blenderset.object_class"] = "human"
-
             avatar = character["avatar_base"]
             anim = random.choices(
                 self.animation_names[avatar], weights=self.animation_lengths[avatar]
