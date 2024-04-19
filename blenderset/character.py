@@ -132,7 +132,12 @@ class GenerateCharacter(AssetGenerator):
                 character = override_character
             fn = character["fbx"]
             print("Importing", fn)
-            bpy.ops.cc3.importer(filepath=str(fn), param="IMPORT_QUALITY")
+            try:
+                bpy.ops.cc3.importer(filepath=str(fn), param="IMPORT_QUALITY")
+            except RuntimeError as e:
+                if e.args != ('Error: Character has no Json data, using default values. \n\n',):
+                    raise
+
             obj = self.context.object
             while obj.parent is not None:
                 obj = obj.parent

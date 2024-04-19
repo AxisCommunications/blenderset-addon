@@ -17,7 +17,8 @@ instance-segmentations and bounding boxes. Here are a few example of images prod
 * Clone the repo: `git clone https://github.com/AxisCommunications/blenderset-addon.git`
 * Create asset and metdata directories: `mkdir blenderset-assets blenderset-metadata`
 * Install system-wide dependencies: `sudo apt install libopenexr-dev libimath-dev`
-* Enter blenderset-addons `cd blenderset-addons`
+* Make sure you have `ldconfig` in your path. If not: `sudo ln -s /sbin/ldconfig /usr/local/bin/`
+* Make the addon directory your cwd: `cd blenderset-addon`
 * Create and initialize virtual environment: `. ./init_env.sh` (you might have to make
   sure that the file is executable with, for example `chmod 775 init_env.sh`)
 * Install dependencies: `make sync_env`.
@@ -28,13 +29,8 @@ instance-segmentations and bounding boxes. Here are a few example of images prod
   The missing package can then be installed by eg.
   `sudo apt install libavcodec-dev`
   `sudo apt install libswscale-dev`
-* Enable the addons by either
-   - `make run-enable_addons` (will fail before dependencies have been installed), or
-   - using the blender GUI
-      1. Use the menu: Edit/Preferences
-      2. Find Add-ons in sidebar of popup
-      3. Find the addon in e.g. using the search function
-      4. Check the check-box in front of the addon to enable it
+
+Addons that crash will simply not show up in the GUI.
 
 
 ## Assets and Metadata
@@ -91,7 +87,9 @@ To add vehicles to the scene, the comercial
 [Transportation Addon](https://blendermarket.com/products/transportation) from
 blender marked can be used. Install the addon manually and copy
 `~/.config/blender/3.2/scripts/addons/Tranportation/data` to
-`example-assets/Tranportation_data`.
+`example-assets/Tranportation_data`. It's zip-fle can also be placed in
+the `custom_addons` directory to be installed automatically during the normal
+installation processes.
 
 
 ### Humans

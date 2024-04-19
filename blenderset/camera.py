@@ -19,15 +19,19 @@ from .utils.debug import show_points, show_poly
 def get_current_camera():
     camera = bpy.context.scene.camera
 
+    if hasattr(camera.data, "fisheye_polynomial_k0"):  # Blender 4
+        data_cycles = camera.data
+    else:
+        data_cycles = camera.data.cycles
     class MyLens(LensDist):
         dist_poly = (
             np.array(
                 [
-                    camera.data.cycles.fisheye_polynomial_k0,
-                    camera.data.cycles.fisheye_polynomial_k1,
-                    camera.data.cycles.fisheye_polynomial_k2,
-                    camera.data.cycles.fisheye_polynomial_k3,
-                    camera.data.cycles.fisheye_polynomial_k4,
+                    data_cycles.fisheye_polynomial_k0,
+                    data_cycles.fisheye_polynomial_k1,
+                    data_cycles.fisheye_polynomial_k2,
+                    data_cycles.fisheye_polynomial_k3,
+                    data_cycles.fisheye_polynomial_k4,
                 ]
             )
             * 180
@@ -71,17 +75,22 @@ class CameraGenerator(AssetGenerator):
         collection = self.context.view_layer.active_layer_collection.collection
         collection.objects.link(camera_object)
 
+        if hasattr(camera_object.data, "fisheye_polynomial_k0"):  # Blender 4
+            data_cycles = camera_object.data
+        else:
+            data_cycles = camera_object.data.cycles
+
         camera_object.data.type = "PANO"
-        camera_object.data.cycles.panorama_type = "FISHEYE_LENS_POLYNOMIAL"
+        data_cycles.panorama_type = 'FISHEYE_LENS_POLYNOMIAL'
         camera_object.data.sensor_fit = "HORIZONTAL"
         self.context.scene.render.engine = "CYCLES"
 
         camera_object.data.sensor_width = lens.sensor_width * lens.pixel_width
-        camera_object.data.cycles.fisheye_polynomial_k0 = np.radians(lens.dist_poly[0])
-        camera_object.data.cycles.fisheye_polynomial_k1 = np.radians(lens.dist_poly[1])
-        camera_object.data.cycles.fisheye_polynomial_k2 = np.radians(lens.dist_poly[2])
-        camera_object.data.cycles.fisheye_polynomial_k3 = np.radians(lens.dist_poly[3])
-        camera_object.data.cycles.fisheye_polynomial_k4 = np.radians(lens.dist_poly[4])
+        data_cycles.fisheye_polynomial_k0 = np.radians(lens.dist_poly[0])
+        data_cycles.fisheye_polynomial_k1 = np.radians(lens.dist_poly[1])
+        data_cycles.fisheye_polynomial_k2 = np.radians(lens.dist_poly[2])
+        data_cycles.fisheye_polynomial_k3 = np.radians(lens.dist_poly[3])
+        data_cycles.fisheye_polynomial_k4 = np.radians(lens.dist_poly[4])
         if lens.nominal_homography is not None:
             projection = np.eye(4)
             projection[:3, :3] = lens.nominal_homography.T

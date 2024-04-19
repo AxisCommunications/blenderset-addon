@@ -12,21 +12,16 @@ import bpy
 
 from blenderset.render import PreviewRenderer, Renderer
 from blenderset.scenarios import (
-    ConstructionRealBack,
-    ForestRoad,
     Nyhamnen,
-    DelfinenSynthBack,
-    DelfinenRealBack,
     RealHighway,
+    ProjectiveSyntheticPedestrians,
 )
 
 
 def main():
     # root = Path('renders/nyhamnen')
-    #     root = Path("renders/delfinen_realback")
-    # root = Path("renders/construction_realback")
-    # root = Path("renders/forest_road2")
-    root = Path("renders/real_highway")
+    # root = Path("renders/real_highway")
+    root = Path("renders/ProjectiveSyntheticPedestrians")
 
     # renderer = PreviewRenderer(bpy.context, root)
     renderer = Renderer(bpy.context, root)
@@ -40,12 +35,9 @@ def main():
 
     for scene_num in range(1000):
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
-        # gen = Nyhamnen(bpy.context, randint(20, 200), test_set=True)
-        # gen = DelfinenSynthBack(bpy.context, 2)
-        # gen = DelfinenRealBack(bpy.context, randint(10, 30))
-        # gen = ConstructionRealBack(bpy.context, randint(3, 6))
-        # gen = ForestRoad(bpy.context, randint(10, 20))
-        gen = RealHighway(bpy.context, randint(20, 30))
+        gen = Nyhamnen(bpy.context, randint(20, 200), test_set=True)
+        # gen = RealHighway(bpy.context, randint(20, 30))
+        gen = ProjectiveSyntheticPedestrians(bpy.context)
         gen.create()
         for perm_num in range(10):
             renderer.render(gen, f"{run_name}_{scene_num:03}_{perm_num:03}")
