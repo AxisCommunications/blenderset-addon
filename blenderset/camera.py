@@ -75,7 +75,7 @@ class CameraGenerator(AssetGenerator):
         collection = self.context.view_layer.active_layer_collection.collection
         collection.objects.link(camera_object)
 
-        if hasattr(camera.data, "fisheye_polynomial_k0"):  # Blender 4
+        if hasattr(camera_object.data, "fisheye_polynomial_k0"):  # Blender 4
             data_cycles = camera_object.data
         else:
             data_cycles = camera_object.data.cycles
