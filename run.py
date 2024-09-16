@@ -47,7 +47,7 @@ def main():
     np.random.seed(random.randrange(0, 2 ** 32))
 
     timeing = []
-    for scene_num in range(2):
+    for scene_num in range(1000):
         t0 = time()
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         # gen = Nyhamnen(bpy.context, 3) #randint(20, 200), test_set=True)
