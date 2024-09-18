@@ -1,6 +1,7 @@
 import bpy
+from pathlib import Path
 
 if __name__ == "__main__":
-    for module in ["blenderset", "cc_blender_tools-1_1_6"]:
-        bpy.ops.preferences.addon_enable(module=module)
-        bpy.ops.wm.save_userpref()
+    for module in open(Path(__file__).parent / "build" / "blender" / "addons_to_enable").readlines():
+        bpy.ops.preferences.addon_enable(module=module.strip())
+    bpy.ops.wm.save_userpref()
