@@ -52,6 +52,7 @@ import_animations:
 .PHONY: sync_env
 
 sync_env:
+	pip install --no-binary OpenEXR OpenEXR
 	pip install -r requirements/misc.txt
 
 build/downloads/Python-$(PYTHON_VERSION).0.tar.xz:
@@ -108,7 +109,7 @@ $(BLENDER_DIR)/_envoy: build/downloads/_envoy
 	-mv $(@D)/custom_addons/* $(@D)/$(BLENDER_VERSION)/scripts/addons/
 	# Install dependencies
 	ln -s $(BLENDER_VERSION) $(@D)/current
-	. build/blender/current/python/bin/activate && pip install --no-binary OpenEXR OpenEXR && $(MAKE) sync_env
+	. build/blender/current/python/bin/activate && $(MAKE) sync_env
 	# Enable addons
 	$(BLENDER) -b --python enable_addons.py
 	@touch $@
