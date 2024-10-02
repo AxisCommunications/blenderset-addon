@@ -7,6 +7,7 @@ PYTHON_VERSION?=3.10
 
 BLENDER_DIR?=build/blender
 BLENDER?=$(BLENDER_DIR)/blender
+export BLENDER_USER_SCRIPTS=$(BLENDER_DIR)/no_user_addons
 
 .PHONY: fix_format
 
@@ -19,9 +20,6 @@ release:
 
 interactive:
 	PWD=$(shell pwd) $(BLENDER) blank.blend
-
-vinterspel:
-	$(BLENDER) /home/hakan/src/lightning_crowd/vinterspel2021/vinterspelen_bkg.blend
 
 delfinensynth:
 	$(BLENDER) delfinensynth.blend
@@ -107,6 +105,7 @@ $(BLENDER_DIR)/_envoy: build/downloads/_envoy
 	-for zip in custom_addons/*.zip; do unzip $$zip -d $(@D)/custom_addons/; done
 	-ls $(@D)/custom_addons >> $(@D)/addons_to_enable
 	-mv $(@D)/custom_addons/* $(@D)/$(BLENDER_VERSION)/scripts/addons/
+	-mkdir -p $(BLENDER_USER_SCRIPTS)
 	# Install dependencies
 	ln -s $(BLENDER_VERSION) $(@D)/current
 	. build/blender/current/python/bin/activate && $(MAKE) sync_env

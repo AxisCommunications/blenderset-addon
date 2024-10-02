@@ -16,9 +16,9 @@ instance-segmentations and bounding boxes. Here are a few example of images prod
 * Create a root directory and enter it: `mkdir blenderset; cd blenderset`
 * Clone the repo: `git clone https://github.com/AxisCommunications/blenderset-addon.git`
 * Create asset and metdata directories: `mkdir blenderset-assets blenderset-metadata`
-* Install system-wide dependencies: `sudo apt install libopenexr-dev libimath-dev`
+* Install system-wide dependencies: `sudo apt install libopenexr-dev libimath-dev libavcodec-dev libswscale-dev`
 * Make sure you have `ldconfig` in your path. If not: `sudo ln -s /sbin/ldconfig /usr/local/bin/`
-* Enter blenderset-addons `cd blenderset-addons`
+* Enter blenderset-addons `cd blenderset-addon`
 * Create and initialize virtual environment: `. ./init_env.sh` (you might have to make
   sure that the file is executable with, for example `chmod 775 init_env.sh`)
 * Install dependencies: `make sync_env`.
@@ -94,6 +94,10 @@ installation processes.
 
 ### Humans
 
+Human 3D models can come either from Reallusion (Character Creator or Actorcore) or from BEDLAM.
+
+##### Reallusion
+
 3D models of humans can be created in
 [Reallusion Character Creator](https://www.reallusion.com/character-creator/)
 or downloaded from [Actorcore](https://actorcore.reallusion.com/). Export them into
@@ -130,3 +134,49 @@ To try out the example `example-metadata/character_metadata.json` out of the box
 * Press one of the 3 top "Scenario" buttions
 * If you want more Characters, press "Create" under "Characters"
 * To move the characters and alter the pose, press "Update" under "Characters"
+
+##### BEDLAM
+
+To use human characters from the BEDLAM dataset, they need to be downloaded from the BEDLAM website manually an prepared:
+
+* Register and log into the [SMPL-X Download site](https://smpl-x.is.tue.mpg.de/download.php)
+* Download the [SMPL-X Blender Add-on](https://download.is.tue.mpg.de/download.php?domain=smplx&sfile=smplx_blender_addon_300_20220623.zip)
+* Start an interactive session (`make interactive`) and install the addon manually. The zip-fle can also be placed in the `custom_addons` directory to be installed automatically during the normal installation processes.
+* Register and log into the [BEDLAM Download site](https://bedlam.is.tue.mpg.de/download.php).
+* Create a subdirectory called bedlam in the blenderset-assets directory created during installation.
+* Download the [SMPL-X gendered ground truth/animation files](https://download.is.tue.mpg.de/download.php?domain=bedlam&resume=1&sfile=bedlam_labels/gendered_ground_truth.zip) and unpack into the blenderset-assets/bedlam directory.
+* Create a subdirectory called blenderset-assets/bedlam/clothing
+* From the [Simulated clothing](https://bedlam.is.tue.mpg.de/clothingsim.php) page, download as many of the .tar archives with "30 FPS abc (Alembic) files" as you want and unpack in blenderset-assets/bedlam/clothing directory.
+* From the [Simulated clothing](https://bedlam.is.tue.mpg.de/clothingsim.php) page, download as many of the .tar archives with "Clothing textures" as you want and unpack in blenderset-assets/bedlam/clothing directory.
+* Download the [Body Textures](https://download.is.tue.mpg.de/download.php?domain=bedlam&resume=1&sfile=bedlam_body_textures_meshcapade.zip) and unpack in the blenderset-assets/bedlam directory.
+* A minimal setup could at this point have the following directory structure:
+```
+blenderset-assets/
+blenderset-assets/bedlam
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/eye
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/eye/SMPLX_eye.png
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/female
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/female/skin
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/female/skin/skin_f_african_01_ALB.png
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/male
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/male/skin
+blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/male/skin/skin_m_asian_04_ALB.png
+blenderset-assets/bedlam/clothing
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations/1095
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations/1095/1095.abc
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01/texture_01_normal_1001.png
+blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01/texture_01_diffuse_1001.png
+blenderset-assets/bedlam/gendered_ground_truth
+blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009
+blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para
+blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para/1095
+blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para/1095/motion_seq.npz
+```
+* FIXME: Scale textures

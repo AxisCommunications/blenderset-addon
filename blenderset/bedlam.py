@@ -54,7 +54,7 @@ class BedlamPanel(bpy.types.Panel):
 
     def draw(self, context):
         op = self.layout.operator("blenderset.bedlam_create", text="Create")
-        op.nbr_of_bedlams = 10
+        op.nbr_of_bedlams = 1
         op = self.layout.operator("blenderset.bedlam_create_soccer", text="Create Soccer Player")
         op = self.layout.operator("blenderset.bedlam_update", text="Update")
         op = self.layout.operator("blenderset.bedlam_create_soccer_scene", text="Soccer Scene")
