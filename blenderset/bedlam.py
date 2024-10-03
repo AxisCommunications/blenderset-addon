@@ -12,6 +12,9 @@ import json
 from time import time
 from shapely.geometry import MultiPolygon, Polygon, Point
 from blenderset.assets import ComposedAssetGenerator
+from blenderset.background import GeneratePremadeBackground
+from blenderset.light import GenerateHdrDoomLight
+
 
 class BedlamCreate(bpy.types.Operator):
     bl_idname = "blenderset.bedlam_create"
@@ -60,8 +63,20 @@ class BedlamPanel(bpy.types.Panel):
         op = self.layout.operator("blenderset.bedlam_create_soccer_scene", text="Soccer Scene")
 
 
-class GenerateBedlamClothes(AssetGenerator):
+class ClothAssetGenerator(AssetGenerator):
     def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+        raise NotImplementedError
+
+    def filter_animations(self, animations):
+        raise NotImplementedError
+
+
+class GenerateBedlamClothes(ClothAssetGenerator):
+    def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+        """
+            Picks some random cloths from the BEDLAM animation `animation_fn`
+            and dresses the the charecter object `obj`in those.
+        """
         assert step_size == 1
         cloth = self.anim_to_cloth(animation_fn)
         texture = choice(list((cloth.parent.parent.parent / "clothing_textures").glob('*')))
@@ -80,15 +95,23 @@ class GenerateBedlamClothes(AssetGenerator):
 
 
     def anim_to_cloth(self, fn):
+        "Converts a BEDLAM animation filename to the corresponding cloth filename."
         root = self.root / "bedlam"
         name = fn.parent.name
         return root / "clothing" / fn.parent.parent.parent.name / "clothing_simulations" / name / (name + '.abc')
 
     def filter_animations(self, animations):
+        "Filter out the animations for which BEDLAM cloths exists in the asset catalog."
         return [fn for fn in animations if self.anim_to_cloth(fn).exists()]
 
 
 class GenerateBedlam(AssetGenerator):
+    """
+        Creates `nbr_of_bedlams` BEDLAM characters animated for `nbr_of_frames`
+        frames. The clothing can be customize by setting `cloth_generator` to
+        a suitible ClothAssetGenerator. The positions can be customized by
+        setting `positioner`to a suitable Positioner.
+    """
     override_roi = None
 
     def __init__(
@@ -182,6 +205,11 @@ class GenerateBedlam(AssetGenerator):
             )
 
 def reset_pose_and_shape(armature):
+    """
+        Reset the pose and shape keys of an object to it's rest pose/shape and
+        insert a keyframe at frame=0 that can be used for binding cloths to
+        the object.
+    """
     if armature.type != 'ARMATURE':
         armature = armature.parent
     assert armature.type == 'ARMATURE'
@@ -201,6 +229,11 @@ def reset_pose_and_shape(armature):
 
 
 def create_textured_material(diffuse, normal=None, diffuse2=None):
+    """
+        Create a new material with the specified `diffuse` and `normal`
+        textures. The `diffuse2` texture with be alpha belnded ontop of
+        `diffuse`.
+    """
     mat = bpy.data.materials.new(name="MaterialName")
     mat.use_nodes = True
     tree = mat.node_tree
@@ -247,6 +280,7 @@ def create_textured_material(diffuse, normal=None, diffuse2=None):
     return mat
 
 def adjust_height(context, obj, offset):
+    "Move the reference point of a SMPL object to make it stand on the ground."
     armature = obj.parent
     armature.location.z += offset
 
@@ -277,7 +311,10 @@ def adjust_height(context, obj, offset):
     return offset + height_offset
 
 
-class GenerateSoccerClothes(AssetGenerator):
+class GenerateSoccerClothes(ClothAssetGenerator):
+    """
+        Generate soccer uniform cloths for BEDLAM characters.
+    """
     def __init__(self, context):
         super().__init__(context)
         self.root = self.root / 'SportCloth'
@@ -407,6 +444,12 @@ class GenerateSoccerClothes(AssetGenerator):
 
 
 class GenerateSoccerClothesTeam(GenerateSoccerClothes):
+    """
+        Generate soccer uniform cloths for BEDLAM characters for an entire team
+        of players. Which team is selected randomly once by calling the
+        `select_uniform()` method. Then the same uniform is applied to all
+        players.
+    """
     def __init__(self, context, kind='Home', player_type='Player'):
         super().__init__(context)
         self.kind = kind
@@ -423,6 +466,9 @@ class GenerateSoccerClothesTeam(GenerateSoccerClothes):
         obj['blenderset.player_type'] = self.player_type
 
 class GenerateSoccerClothesReferee(GenerateSoccerClothes):
+    """
+       Generate soccer referee cloths for BEDLAM characters.
+    """
     def __init__(self, context):
         super().__init__(context)
         self.uniforms = self.uniforms['Referee']
@@ -437,15 +483,21 @@ class GenerateSoccerClothesReferee(GenerateSoccerClothes):
         self.apply_clothes(obj, self.clothes_names, self.uniform, None, None)
         obj['blenderset.player_type'] = 'Referee'
 
+class Positioner:
+    "Helper to position objects acording to different distributions."
+    def random_position(self, roi, max_dist=2):
+        raise NotImplementedError
 
-class ExtendedRectanglePositioner:
+class ExtendedRectanglePositioner(Positioner):
+    "Position objects uniformly witin or atmost `max_dist` units away from the rectange `roi`."
     def random_position(self, roi, max_dist=2):
         min_x, min_y, max_x, max_y = roi.bounds
         x = np.random.uniform(min_x - max_dist, max_x + max_dist)
         y = np.random.uniform(min_y - max_dist, max_y + max_dist)
         return x, y
 
-class RightOutsidePositioner:
+class RightOutsidePositioner(Positioner):
+    "Position objects uniformly 0 - `max_dist` units away from the rectange `roi`."
     def random_position(self, roi, max_dist=2):
         min_x, min_y, max_x, max_y = roi.bounds
         offset = np.random.uniform(0, max_dist)
@@ -457,7 +509,8 @@ class RightOutsidePositioner:
             y = choice([min_y - offset, max_y + offset])
         return x, y
 
-class CloseToCommonPositioner:
+class CloseToCommonPositioner(Positioner):
+    "Position objects gaussian distributed with standard deviation `std` around a common position but still within `roi`."
     def __init__(self, std) -> None:
         self.std = std
         self.reset_common_position()
@@ -499,6 +552,9 @@ class CloseToFarSidePositioner(CloseToCommonPositioner):
         return max_x, np.random.uniform(min_y, max_y)
 
 class GenerateSoccerTeams(ComposedAssetGenerator):
+    """
+        Generates two soccer teams with golies and referees.
+    """
     def __init__(self, context, nbr_of_players=10):
         self.nbr_of_players = nbr_of_players
         super().__init__(context)
@@ -535,9 +591,6 @@ class GenerateSoccerTeams(ComposedAssetGenerator):
             poser.reset_common_position()
         return super().update()
 
-
-from blenderset.background import GeneratePremadeBackground
-from blenderset.light import GenerateHdrDoomLight
 
 class BedlamCreateSoccerScene(bpy.types.Operator):
     bl_idname = "blenderset.bedlam_create_soccer_scene"

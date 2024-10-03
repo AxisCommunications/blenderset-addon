@@ -149,34 +149,42 @@ To use human characters from the BEDLAM dataset, they need to be downloaded from
 * From the [Simulated clothing](https://bedlam.is.tue.mpg.de/clothingsim.php) page, download as many of the .tar archives with "30 FPS abc (Alembic) files" as you want and unpack in blenderset-assets/bedlam/clothing directory.
 * From the [Simulated clothing](https://bedlam.is.tue.mpg.de/clothingsim.php) page, download as many of the .tar archives with "Clothing textures" as you want and unpack in blenderset-assets/bedlam/clothing directory.
 * Download the [Body Textures](https://download.is.tue.mpg.de/download.php?domain=bedlam&resume=1&sfile=bedlam_body_textures_meshcapade.zip) and unpack in the blenderset-assets/bedlam directory.
-* A minimal setup could at this point have the following directory structure:
+* Scale down the textures:
+```bash
+  cd blenderset-assets/bedlam/bedlam_body_textures_meshcapade
+  for d in $(find . -type d); do
+      mkdir -p ../bedlam_body_textures_meshcapade_512/$d
+      mogrify -resize 512x512 -path ../bedlam_body_textures_meshcapade_512/$d $d/*
+  done
 ```
-blenderset-assets/
-blenderset-assets/bedlam
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/eye
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/eye/SMPLX_eye.png
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/female
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/female/skin
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/female/skin/skin_f_african_01_ALB.png
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/male
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/male/skin
-blenderset-assets/bedlam/bedlam_body_textures_meshcapade/smpl/MC_texture_skintones/male/skin/skin_m_asian_04_ALB.png
-blenderset-assets/bedlam/clothing
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations/1095
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations/1095/1095.abc
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01/texture_01_normal_1001.png
-blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01/texture_01_diffuse_1001.png
-blenderset-assets/bedlam/gendered_ground_truth
-blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009
-blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para
-blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para/1095
-blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para/1095/motion_seq.npz
+
+* A minimal setup could consist of the following directory structure:
 ```
-* FIXME: Scale textures
+    blenderset-assets/
+    blenderset-assets/bedlam
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/eye
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/eye/SMPLX_eye.png
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones/female
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones/female/skin
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones/female/skin/skin_f_african_01_ALB.png
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones/male
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones/male/skin
+    blenderset-assets/bedlam/bedlam_body_textures_meshcapade_512/smpl/MC_texture_skintones/male/skin/skin_m_asian_04_ALB.png
+    blenderset-assets/bedlam/clothing
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations/1095
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_simulations/1095/1095.abc
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01/texture_01_normal_1001.png
+    blenderset-assets/bedlam/clothing/rp_aaron_posed_009/clothing_textures/texture_01/texture_01_diffuse_1001.png
+    blenderset-assets/bedlam/gendered_ground_truth
+    blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009
+    blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para
+    blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para/1095
+    blenderset-assets/bedlam/gendered_ground_truth/rp_aaron_posed_009/moving_body_para/1095/motion_seq.npz
+```
