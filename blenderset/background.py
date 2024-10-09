@@ -292,12 +292,15 @@ class GeneratePremadeBackground(AssetGenerator):
         self, context, blend_file, camera_name=None, apply_background_modifiers=True
     ):
         super().__init__(context)
-        self.blend_file = str(self.root / "background_models" / blend_file)
+        if isinstance(blend_file, str):
+            self.blend_files = [self.root / "background_models" / blend_file]
+        else:
+            self.blend_files = list(blend_file)
         self.camera_name = camera_name
         self.apply_background_modifiers = apply_background_modifiers
 
     def create(self):
-        bpy.ops.wm.open_mainfile(filepath=self.blend_file)
+        bpy.ops.wm.open_mainfile(filepath=str(choice(self.blend_files)))
         if self.camera_name is not None:
             bpy.data.scenes["Scene"].camera = bpy.data.objects[self.camera_name]
         if self.apply_background_modifiers:

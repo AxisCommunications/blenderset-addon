@@ -7,6 +7,7 @@ import OpenEXR
 import cv2
 import bpy
 import numpy as np
+from blenderset.utils import mesh
 
 
 class ExrFile:
@@ -59,8 +60,9 @@ class ExrFile:
                     )
                     obj["name"] = name
                     objects[root_name + "/" + name] = obj
+
                     # Adding the head bounding box using the masks:
-                    if cls == "human":
+                    if cls == "human" and head_mask is not None:
                         combined_mask = np.multiply(mask, head_mask)
                         img = 255 * combined_mask.astype(np.uint8)
                         kernel = np.ones((5, 5), np.uint8)  # 2,2
@@ -79,7 +81,28 @@ class ExrFile:
                                 ]
                             )
 
+                    # 3D Bounding box
+                    meshes = [o for o in list(bpy.data.objects[name].children_recursive) + [bpy.data.objects[name]] if o.type == 'MESH']
+                    obj["bounding_3d"] = mesh.bounding_box(meshes)
+
+                    # SMPL Shape keys
+                    for o in bpy.data.objects[name].children_recursive:
+                        shape_keys = o.data.shape_keys
+                        if shape_keys is not None and len(shape_keys.key_blocks) >= 10 and o.name.lower().startswith('smpl'):
+                            obj["smpl_shape"] = [shape_keys.key_blocks[f'Shape{i:03d}'].value for i in range(10)]
+                            obj["smpl_matrix_world"] = np.array(bpy.data.objects[name].matrix_world).tolist()
+                            break
+
+                    # Metadata
+                    obj["metadata"] = {k[11:]:v for k, v in bpy.data.objects[name].items() if k.startswith('blenderset.') and isinstance(v, (str, int, float))}
+
         return objects, all_segmentations
+
+    def get_depth_image(self, name="View Layer.Depth.Z"):
+        assert self.header["channels"][name] == Imath.Channel(
+            Imath.PixelType(Imath.PixelType.FLOAT), 1, 1
+        )
+        return np.frombuffer(self.exr.channel(name), np.float32).reshape(self.shape).astype(np.float32)
 
     def get_rgb_image(self, name="View Layer.Combined"):
         img = np.zeros(self.shape + (3,), np.float32)

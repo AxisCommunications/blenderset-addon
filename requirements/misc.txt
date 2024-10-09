@@ -12,3 +12,4 @@ shapely
 setuptools
 vi3o
 colorama
+filelock

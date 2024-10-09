@@ -200,28 +200,6 @@ class GenerateCharacter(AssetGenerator):
                     mind = min(mind, d.magnitude)
         return mind
 
-    def get_roi(self):
-        if self.override_roi is not None:
-            return self.override_roi
-        walkable_polys = self.get_all_proprty_values("blenderset.visible_walkable_roi")
-        return MultiPolygon([Polygon(p) for p in walkable_polys])
-
-    def random_position(self, roi):
-        if roi.bounds:
-            min_x, min_y, max_x, max_y = roi.bounds
-            while True:
-                random_point = Point(
-                    [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
-                )
-                if random_point.within(roi):
-                    return random_point.x, random_point.y
-        else:
-            min_x, min_y, max_x, max_y = -1, -1, 1, 1
-            random_point = Point(
-                [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
-            )
-            return random_point.x, random_point.y
-
     def create_head_mask_output(self, obj):
         for o in obj.children:
             if "CC_Base_Head" not in o.vertex_groups:
