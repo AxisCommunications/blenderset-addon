@@ -92,14 +92,21 @@ class AssetGenerator:
         return MultiPolygon([Polygon(p) for p in walkable_polys])
 
     def random_position(self, roi):
+        """
+            Returns a random point within the region of interest (roi) if
+            present, else return a random point between +- 1 m from origin
+            of the 3d model.
+        """
         if roi.bounds and all(np.isfinite(roi.bounds)):
             min_x, min_y, max_x, max_y = roi.bounds
-            while True:
+            for _ in range(100000):
                 random_point = Point(
                     [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
                 )
                 if random_point.within(roi):
                     return random_point.x, random_point.y
+            print("Warning: Failed to find a position within RoI.")
+            return random_point.x, random_point.y
         else:
             min_x, min_y, max_x, max_y = -1, -1, 1, 1
             random_point = Point(

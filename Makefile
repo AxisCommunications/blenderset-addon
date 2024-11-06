@@ -4,6 +4,7 @@ CC3_VERSION?=1_1_6
 BLENDER_VERSION?=3.6
 BLENDER_ARCHIVE?=blender-$(BLENDER_VERSION).7-linux-x64.tar.xz
 PYTHON_VERSION?=3.10
+DOCKER_REPO?=hakanardo/blenderset
 
 BLENDER_DIR?=build/blender
 BLENDER?=$(BLENDER_DIR)/blender
@@ -87,7 +88,7 @@ $(BLENDER_DIR)/_envoy: build/downloads/_envoy
 		-xf $(<D)/Python-$(PYTHON_VERSION).0.tar.xz  -C $(@D)
 	cd $(@D)/Python-$(PYTHON_VERSION).0 && ./configure
 	# Converting blender environment to venv...
-	-mkdir -p $(@D)/$(BLENDER_VERSION)/python/include/python3.10
+	-mkdir -p $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)
 	mv $(@D)/Python-$(PYTHON_VERSION).0/Include/*.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/
 	mv $(@D)/Python-$(PYTHON_VERSION).0/pyconfig.h $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/
 	-mkdir $(@D)/$(BLENDER_VERSION)/python/include/python$(PYTHON_VERSION)/cpython/
@@ -121,8 +122,8 @@ docker-build:
 	docker build -t blenderset .
 
 docker-push: docker-build
-	docker tag blenderset hakanardo/blenderset
-	docker push hakanardo/blenderset
+	docker tag blenderset $(DOCKER_REPO)
+	docker push $(DOCKER_REPO)
 
 docker-run: docker-run-run
 k8s-run: k8s-run-run
