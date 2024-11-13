@@ -45,8 +45,15 @@ class ExrFile:
                     b'27" screen', b"27 screen"
                 )  # Hacky bug workaround
                 for name, hexid in json.loads(data).items():
+                    sid = int(hexid, 16)
+                    # Make sure sid is a legal float32 bit-pattern (Se:
+                    # https://raw.githubusercontent.com/Psyop/Cryptomatte/master/specification/cryptomatte_specification.pdf)
+                    exp = sid >> 23 & 255
+                    if (exp == 0) or (exp == 255):
+                        sid ^= 1 << 23
+
                     obj = {}
-                    obj["segmentation_id"] = sid = int(hexid, 16)
+                    obj["segmentation_id"] = sid
                     mask = segmentation == sid
                     vv, uu = np.nonzero(mask)
                     if name not in bpy.data.objects:
