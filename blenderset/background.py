@@ -292,8 +292,8 @@ class GeneratePremadeBackground(AssetGenerator):
         self, context, blend_files, camera_name=None, apply_background_modifiers=True
     ):
         """
-            Randomly select one of the blend files whoes filenames are passed
-            as a list to the `blend_files` argument to use as backgournd in the
+            Randomly select one of the blend files whos file paths are passed
+            as a list to the `blend_files` argument to use as background in the
             scene. If `camera_name` is not None, the scene is updated to use
             the named camera. Otherwise the default camera of the blend file
             is used.
