@@ -289,20 +289,20 @@ class GenerateSyntheticBackground(AssetGenerator):
 
 class GeneratePremadeBackground(AssetGenerator):
     def __init__(
-        self, context, blend_file, camera_name=None, apply_background_modifiers=True
+        self, context, blend_files, camera_name=None, apply_background_modifiers=True
     ):
         """
             Randomly select one of the blend files whoes filenames are passed
-            as a list to the `blend_file` argument to use as backgournd in the
+            as a list to the `blend_files` argument to use as backgournd in the
             scene. If `camera_name` is not None, the scene is updated to use
             the named camera. Otherwise the default camera of the blend file
             is used.
         """
         super().__init__(context)
-        if isinstance(blend_file, str):
-            self.blend_files = [self.root / "background_models" / blend_file]
+        if isinstance(blend_files, str):  # Backward compatibility
+            self.blend_files = [self.root / "background_models" / blend_files]
         else:
-            self.blend_files = list(blend_file)
+            self.blend_files = list(blend_files)
         self.camera_name = camera_name
         self.apply_background_modifiers = apply_background_modifiers
 
