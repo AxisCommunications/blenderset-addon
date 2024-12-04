@@ -5,6 +5,7 @@ import json
 import logging
 import pathlib
 from typing import Union
+import gzip
 
 import cv2
 import fire
@@ -12,7 +13,7 @@ import numpy as np
 from blenderset.utils.log import configure_logging
 from skimage import util
 from vi3o import debugview
-from vi3o.image import imread
+from vi3o.image import imread, ptpscale
 
 from blenderset.utils.lens import create_lens_from_json
 
@@ -35,6 +36,8 @@ class DebugViewer(debugview.DebugViewer):
             self.view(_read_seg(path), pause=True)
         elif self._view == "hmask":
             self.view(_read_hmask(path), pause=True)
+        elif self._view == "depth":
+            self.view(_read_depth(path), pause=True)
         else:
             assert False
 
@@ -49,6 +52,8 @@ class DebugViewer(debugview.DebugViewer):
             self._view = "seg"
         elif key == debugview.keysym.H:
             self._view = "hmask"
+        elif key == debugview.keysym.D:
+            self._view = "depth"
         else:
             super().on_key_press(key, modifiers)
         self._render()
@@ -56,17 +61,34 @@ class DebugViewer(debugview.DebugViewer):
 
 @functools.lru_cache(maxsize=2)
 def _read_seg(path: pathlib.Path):
-    return util.img_as_ubyte(np.load(path / "segmentations.npy"))
-
+    if (path / "segmentations.npy").exists():
+        segmentations = np.load(path / "segmentations.npy")
+    else:
+        with gzip.GzipFile(path / "segmentations.npy.gz", "r") as fd:
+            segmentations = np.load(fd)
+    return util.img_as_ubyte(segmentations)
 
 @functools.lru_cache(maxsize=2)
 def _read_hmask(path: pathlib.Path):
     return imread(path / "head_mask.png")
 
+@functools.lru_cache(maxsize=2)
+def _read_depth(path: pathlib.Path):
+    if (path / "depth.npy").exists():
+        depth = np.load(path / "depth.npy")
+    else:
+        with gzip.GzipFile(path / "depth.npy.gz", "r") as fd:
+            depth = np.load(fd)
+    depth[depth>50] = 50
+    return ptpscale(depth)
+
 
 @functools.lru_cache(maxsize=2)
 def _read_rgb_with_overlay(path: pathlib.Path):
-    img = imread(path / "rgb.png")
+    if (path / "rgb.png").exists():
+        img = imread(path / "rgb.png")
+    else:
+        img = imread(path / "rgb.jpg")
     objects = json.load(open(path / "objects.json"))
 
     lens = create_lens_from_json(img.shape, path / "lens.json")
@@ -109,8 +131,19 @@ def _read_rgb_with_overlay(path: pathlib.Path):
                 x, y, z, _ = camera_matrix @ (x, y, z, 1)
                 u, v = lens.world_to_image([x, y, z])[0]
                 cv2.circle(img, (int(u), int(v)), 4, (0, 0, 255), 1)
+
+        if 'bounding_3d' in obj:
+            wpkt = np.column_stack([obj['bounding_3d'], np.ones(len(obj['bounding_3d']))]) @ camera_matrix.T
+            ipkt = lens.world_to_image(wpkt[:,:3]).astype(int)
+            for i, j in box_lines:
+                cv2.line(img, ipkt[i], ipkt[j], (255,255,0), 1)
     return img
 
+box_lines = [
+    (0, 1), (1, 2), (2, 3), (3, 0),
+    (4, 5), (5, 6), (6, 7), (7, 4),
+    (0, 4), (1, 5), (2, 6), (3, 7),
+]
 
 def show_many(*paths: Union[str, pathlib.Path]):
     DebugViewer([pathlib.Path(path) for path in paths])

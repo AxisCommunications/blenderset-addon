@@ -1,10 +1,14 @@
 import json
 from pathlib import Path
+from shapely.geometry import MultiPolygon, Polygon, Point
+import numpy as np
 
 import bpy
 
 
 class AssetGenerator:
+    override_roi = None
+
     def __init__(self, context):
         self.context = context
         self.created_objects = []
@@ -80,6 +84,36 @@ class AssetGenerator:
             if obj.get("blenderset.object_class") == class_name:
                 objs.append(obj)
         return objs
+
+    def get_roi(self):
+        if self.override_roi is not None:
+            return self.override_roi
+        walkable_polys = self.get_all_proprty_values("blenderset.visible_walkable_roi")
+        return MultiPolygon([Polygon(p) for p in walkable_polys])
+
+    def random_position(self, roi):
+        """
+            Returns a random point within the region of interest (roi) if
+            present, else return a random point between +- 1 m from origin
+            of the 3d model.
+        """
+        if roi.bounds and all(np.isfinite(roi.bounds)):
+            min_x, min_y, max_x, max_y = roi.bounds
+            for _ in range(100000):
+                random_point = Point(
+                    [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
+                )
+                if random_point.within(roi):
+                    return random_point.x, random_point.y
+            print("Warning: Failed to find a position within RoI.")
+            return random_point.x, random_point.y
+        else:
+            min_x, min_y, max_x, max_y = -1, -1, 1, 1
+            random_point = Point(
+                [np.random.uniform(min_x, max_x), np.random.uniform(min_y, max_y)]
+            )
+            return random_point.x, random_point.y
+
 
 
 class ComposedAssetGenerator(AssetGenerator):
