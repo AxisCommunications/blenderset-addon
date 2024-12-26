@@ -36,6 +36,13 @@ class Renderer:
         self.context.window.view_layer.use_pass_z = True
         self.context.scene.render.image_settings.color_depth = "32"
 
+    def render_all_frames(self, asset_generator, out_dir=None):
+        if out_dir is None:
+            out_dir = str(uuid.uuid1())
+        for f in range(self.context.scene.frame_start, self.context.scene.frame_end + 1):
+            bpy.context.scene.frame_set(f)
+            self.render_all_cameras(asset_generator, out_dir + '/' + str(f))
+
     def render_all_cameras(self, asset_generator, out_dir=None):
         if out_dir is None:
             out_dir = str(uuid.uuid1())

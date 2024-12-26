@@ -70,6 +70,13 @@ class ClothAssetGenerator(AssetGenerator):
     def filter_animations(self, animations):
         raise NotImplementedError
 
+class NoClothes(ClothAssetGenerator):
+    def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+        pass
+
+    def filter_animations(self, animations):
+        return animations
+
 
 class GenerateBedlamClothes(ClothAssetGenerator):
     def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
@@ -120,11 +127,13 @@ class GenerateBedlam(AssetGenerator):
         cloth_generator=None,
         nbr_of_bedlams=1,
         nbr_of_frames=5,
-        positioner=None
+        positioner=None,
+        fps=30,
     ):
         super().__init__(context)
         self.nbr_of_bedlams = nbr_of_bedlams
         self.nbr_of_frames = nbr_of_frames
+        self.fps = fps
         root = self.root / "bedlam"
         max_side = 512
         skins_root = root / f"bedlam_body_textures_meshcapade_{max_side}/smpl/MC_texture_skintones/"
@@ -140,11 +149,13 @@ class GenerateBedlam(AssetGenerator):
         self.animations = self.cloth_generator.filter_animations(self.animations)
         if positioner is not None:
             self.random_position = positioner.random_position
+        context.scene.frame_start = 1
+        context.scene.frame_end = nbr_of_frames
 
 
     def create(self):
         context = self.context
-        context.scene.render.fps = 30
+        context.scene.render.fps = self.fps
         for _ in range(self.nbr_of_bedlams):
             fn = choice(self.animations)
             anim = np.load(fn)
@@ -154,11 +165,10 @@ class GenerateBedlam(AssetGenerator):
             mocap_framerate = int(data["mocap_frame_rate"]) if "mocap_frame_rate" in data else int(data["mocap_framerate"])
             target_framerate = context.scene.render.fps
             step_size = int(mocap_framerate / target_framerate)
-            nbr_of_frames *= step_size
 
-            f = choice(range(len(data['poses']) - nbr_of_frames + 1))
+            f = choice(range(len(data['poses']) - nbr_of_frames * step_size + 1))
             for k in ['poses', 'global_ori', 'trans']:
-                data[k] = data[k][f:f+nbr_of_frames]
+                data[k] = data[k][f:f+nbr_of_frames*step_size]
             with NamedTemporaryFile(suffix='.npz') as tmp:
                 np.savez(tmp.name, **data)
                 bpy.ops.object.smplx_add_animation(filepath=tmp.name, anim_format='SMPL-X', target_framerate=target_framerate, keyframe_corrective_pose_weights=True)
@@ -166,7 +176,7 @@ class GenerateBedlam(AssetGenerator):
             obj = context.object
             gender, offset = ('female', 1.25) if 'female' in context.object.name else ('male', 1.357)
             context.scene.frame_start = 1
-            context.scene.frame_end = nbr_of_frames
+            context.scene.frame_end = min(context.scene.frame_end, nbr_of_frames)
             offset = adjust_height(context, obj, offset)
             skin = choice(self.skins[gender])
             obj.data.materials.clear()
@@ -178,14 +188,13 @@ class GenerateBedlam(AssetGenerator):
             obj.parent["blenderset.gender"] = gender
             obj.parent["blenderset.skin"] = str(skin)
 
-            self.claim_object(obj.parent)
+            context.scene.frame_start = 1
+            context.scene.frame_end = min(context.scene.frame_end, nbr_of_frames)
             bpy.context.scene.frame_set(nbr_of_frames // 2 + 1)
+
+            self.claim_object(obj.parent)
             self.update_object(obj.parent)
             self.cloth_generator.create(obj.parent, fn, f, step_size, offset)
-
-            context.scene.frame_start = 0
-            context.scene.frame_end = nbr_of_frames
-            bpy.context.scene.frame_set(nbr_of_frames // 2 + 1)
 
 
     def update_object(self, obj):
@@ -197,12 +206,25 @@ class GenerateBedlam(AssetGenerator):
         for _ in range(1000):
             x, y = self.random_position(roi)
             obj.location = [x, y, 0]
-            if not mesh.intersects(object_meshes, other_meshes):
+            if not intersects_in_any_frame(self.context, object_meshes, other_meshes):
                 break
         else:
             raise AssetGenerationFailed(
                 f"Could not find non-overlapping position for character '{obj.name}'"
             )
+
+
+def intersects_in_any_frame(context, object_meshes, other_meshes):
+    frm = context.scene.frame_current
+    try:
+        for f in range(context.scene.frame_start, context.scene.frame_end + 1):
+            bpy.context.scene.frame_set(f)
+            if mesh.intersects(object_meshes, other_meshes):
+                return True
+        return False
+    finally:
+        bpy.context.scene.frame_set(frm)
+
 
 def reset_pose_and_shape(armature):
     """
