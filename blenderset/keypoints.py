@@ -30,6 +30,7 @@ def get_keypoints(name):
         keypoints = {}
         for name, bone in obj.pose.bones.items():
             keypoints[name] = list((np.array(obj.matrix_world) @ np.array(list(bone.head) + [1]))[:3])
+            keypoints[name + '_matrix'] = np.array(obj.matrix_local).tolist()
         keypoints["head_center"] = keypoints["head"]
         return keypoints
     else:
@@ -37,7 +38,10 @@ def get_keypoints(name):
 
 
 def project_keypoints(keypoints, camera_matrix, lens):
-    for name, (x, y, z) in list(keypoints.items()):
+    for name, pkt in list(keypoints.items()):
+        if name.endswith('_matrix'):
+            continue
+        x, y, z = pkt
         x, y, z, _ = camera_matrix @ (x, y, z, 1)
         u, v = lens.world_to_image([x, y, z])[0]
         keypoints[name + "_img"] = (u, v)

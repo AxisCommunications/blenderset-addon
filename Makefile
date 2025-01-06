@@ -4,7 +4,7 @@ CC3_VERSION?=1_1_6
 BLENDER_VERSION?=3.6
 BLENDER_ARCHIVE?=blender-$(BLENDER_VERSION).7-linux-x64.tar.xz
 PYTHON_VERSION?=3.10
-DOCKER_REPO?=hakanardo/blenderset
+DOCKER_REPO?=hakanardo/blenderset:multicam
 
 BLENDER_DIR?=build/blender
 BLENDER?=$(BLENDER_DIR)/blender
