@@ -36,11 +36,17 @@ run: run-run
 run-%:
 	$(BLENDER) -b --python $*.py
 
+run-cuda-%:
+	$(BLENDER) -b --python $*.py -- --cycles-device CUDA $(EXTRA_ARG)
+
+run-optix-%:
+	$(BLENDER) -b --python $*.py -- --cycles-device OPTIX $(EXTRA_ARG)
+
 run-cuda:
-	$(BLENDER) -b --python run.py -- --cycles-device CUDA $(EXTRA_ARG)
+	$(MAKE) cuda-run-run
 
 run-optix:
-	$(BLENDER) -b --python run.py -- --cycles-device OPTIX $(EXTRA_ARG)
+	$(MAKE) optix-run-run
 
 run-forever-%:
 	while true; do $(MAKE) run-$*; sleep 1; done
