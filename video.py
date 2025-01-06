@@ -21,8 +21,8 @@ np.set_printoptions(threshold=np.inf)
 
 class Scene(ComposedAssetGenerator):
     def setup(self):
-        # clothes = GenerateBedlamClothes(self.context)
-        clothes = NoClothes(self.context)
+        clothes = GenerateBedlamClothes(self.context)
+        # clothes = NoClothes(self.context)
         return [
             GeneratePremadeBackground(
                 self.context,
