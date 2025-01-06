@@ -64,14 +64,14 @@ class BedlamPanel(bpy.types.Panel):
 
 
 class ClothAssetGenerator(AssetGenerator):
-    def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+    def create(self, obj, animation_fn, animation_offset, fps, height_offset):
         raise NotImplementedError
 
     def filter_animations(self, animations):
         raise NotImplementedError
 
 class NoClothes(ClothAssetGenerator):
-    def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+    def create(self, obj, animation_fn, animation_offset, fps, height_offset):
         pass
 
     def filter_animations(self, animations):
@@ -79,12 +79,12 @@ class NoClothes(ClothAssetGenerator):
 
 
 class GenerateBedlamClothes(ClothAssetGenerator):
-    def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+    def create(self, obj, animation_fn, animation_offset, fps, height_offset):
         """
             Picks some random cloths from the BEDLAM animation `animation_fn`
             and dresses the the charecter object `obj`in those.
         """
-        assert step_size == 1
+        frame_start, frame_end = bpy.context.scene.frame_start, bpy.context.scene.frame_end
         cloth = self.anim_to_cloth(animation_fn)
         texture = choice(list((cloth.parent.parent.parent / "clothing_textures").glob('*')))
         diffuse = texture / (texture.name + '_diffuse_1001.png')
@@ -93,12 +93,12 @@ class GenerateBedlamClothes(ClothAssetGenerator):
         cloth_obj = self.context.object
         mat = create_textured_material(diffuse, normal)
         cloth_obj.data.materials.append(mat)
-        cloth_obj.modifiers[0].cache_file.frame_offset = -100 - animation_offset
+        cloth_obj.modifiers[0].cache_file.frame_offset = (-100 - animation_offset - 1)/30*fps + 1 - 1/fps
         cloth_obj.parent = obj
         cloth_obj.location[2] = height_offset
         cloth_obj['blenderset.animation'] = str(cloth)
-        bpy.context.scene.frame_start = 0
         obj['blenderset.player_type'] = 'Bystander'
+        bpy.context.scene.frame_start, bpy.context.scene.frame_end = frame_start, frame_end
 
 
     def anim_to_cloth(self, fn):
@@ -194,7 +194,7 @@ class GenerateBedlam(AssetGenerator):
 
             self.claim_object(obj.parent)
             self.update_object(obj.parent)
-            self.cloth_generator.create(obj.parent, fn, f, step_size, offset)
+            self.cloth_generator.create(obj.parent, fn, f, self.fps, offset)
 
 
     def update_object(self, obj):
@@ -360,7 +360,7 @@ class GenerateSoccerClothes(ClothAssetGenerator):
         self.names = [n.strip() for n in open(self.root / "names.txt").readlines()]
         self.uniforms = json.load(open(self.root / 'JSONS' / 'team_uniforms.json'))
 
-    def create(self, obj, animation_fn, animation_offset, step_size, height_offset):
+    def create(self, obj, animation_fn, animation_offset, fps, height_offset):
         clothes_names = [choice(alt) for alt in self.alternatives]
         uniform = choice(list(choice(list(choice(list(self.uniforms.values())).values())).values()))
         self.apply_clothes(obj, clothes_names, uniform, np.random.randint(1, 99), choice(self.names))
