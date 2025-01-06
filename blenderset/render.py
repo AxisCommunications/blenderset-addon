@@ -17,11 +17,12 @@ class Renderer:
     use_denoising = True
     device = "GPU"
 
-    def __init__(self, context, output_root, save_blend=False, save_exr=False):
+    def __init__(self, context, output_root, save_blend=False, save_exr=False, output_format='JPEG'):
         self.context = context
         self.output_root = Path(output_root)
         self.save_blend = save_blend
         self.save_exr = save_exr
+        self.output_format = output_format
 
     def setup(self):
         self.context.scene.render.engine = "CYCLES"
@@ -49,9 +50,14 @@ class Renderer:
         for cam in bpy.context.view_layer.objects:
             if cam.type == 'CAMERA':
                 bpy.context.scene.camera = cam
-                composer_nodes = bpy.context.scene.node_tree.nodes
-                if 'blenderset.Background' in composer_nodes:
-                    composer_nodes['blenderset.Background'].image = cam.data.background_images[0].image
+                if bpy.context.scene.node_tree is not None:
+                    composer_nodes = bpy.context.scene.node_tree.nodes
+                    if 'blenderset.Background' in composer_nodes:
+                        composer_nodes['blenderset.Background'].image = cam.data.background_images[0].image
+                if 'blenderset.resolution_x' in cam:
+                    bpy.context.scene.render.resolution_x = cam['blenderset.resolution_x']
+                    bpy.context.scene.render.resolution_y = cam['blenderset.resolution_y']
+
                 self.render(asset_generator, out_dir + '/' + cam.name)
 
     def render(self, asset_generator, out_dir=None):
@@ -76,9 +82,17 @@ class Renderer:
         self.context.view_layer.update()
         bpy.ops.render.render(write_still=True)
 
-        self.context.scene.render.image_settings.file_format = "JPEG"
+        if self.output_format == 'JPEG':
+            ext = 'jpg'
+        else:
+            ext = self.output_format.lower()
+
+        if self.output_format == 'PNG':
+            bpy.context.scene.render.image_settings.color_mode = 'RGBA'
+
+        self.context.scene.render.image_settings.file_format = self.output_format
         self.context.scene.render.image_settings.color_depth = "8"
-        bpy.data.images["Render Result"].save_render(str(out / "rgb.jpg"))
+        bpy.data.images["Render Result"].save_render(str(out / ("rgb." + ext)))
 
         camera_matrix, lens = get_current_camera()
         np.save(out / "camera_matrix.npy", camera_matrix)
