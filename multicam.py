@@ -61,7 +61,7 @@ def main():
         bpy.ops.wm.open_mainfile(filepath="blank.blend")
         gen.create()
         with render_lock:
-            renderer.render_all_frames(gen, f"{run_name}")
+            renderer.render_all_frames(gen, f"{run_name}_{scene_num}")
 
 
 if __name__ == "__main__":
