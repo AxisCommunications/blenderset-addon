@@ -41,10 +41,11 @@ class Scene(ComposedAssetGenerator):
 def main():
     root = Path("renders/multicam")
 
-    renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True, output_format='PNG')
-    # renderer = Renderer(bpy.context, root, output_format='PNG')
+    # renderer = PreviewRenderer(bpy.context, root, save_blend=True, save_exr=True, output_format='PNG')
+    renderer = Renderer(bpy.context, root, output_format='PNG')
 
-    render_lock = FileLock("/tmp/blenderset_render.lock")
+    gpu = os.environ.get('CUDA_VISIBLE_DEVICES', '') + os.environ.get('HIP_VISIBLE_DEVICES', '')
+    render_lock = FileLock(f"/tmp/blenderset_render_{gpu}.lock")
     run_start = datetime.datetime.now()
     run_name = os.environ.get(
         "BLENDERSET_RUN_NAME", run_start.strftime("%Y%m%d_%H%M%S") + "_" + gethostname()
@@ -55,11 +56,13 @@ def main():
     random.seed(run_name)
     np.random.seed(random.randrange(0, 2 ** 32))
 
-    bpy.ops.wm.open_mainfile(filepath="blank.blend")
     gen = Scene(bpy.context)
-    gen.create()
-    with render_lock:
-        renderer.render_all_frames(gen, f"{run_name}")
+    for scene_num in range(1000):
+        bpy.ops.wm.open_mainfile(filepath="blank.blend")
+        gen.create()
+        with render_lock:
+            renderer.render_all_frames(gen, f"{run_name}")
+
 
 if __name__ == "__main__":
     configure_logging()
