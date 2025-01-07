@@ -4,7 +4,7 @@ from pathlib import Path
 
 import bpy
 import numpy as np
-from vi3o.image import imwrite
+from vi3o.image import imwrite, imread
 import gzip
 
 from blenderset.camera import get_current_camera
@@ -92,7 +92,8 @@ class Renderer:
 
         self.context.scene.render.image_settings.file_format = self.output_format
         self.context.scene.render.image_settings.color_depth = "8"
-        bpy.data.images["Render Result"].save_render(str(out / ("rgb." + ext)))
+        rgb_fn = str(out / ("rgb." + ext))
+        bpy.data.images["Render Result"].save_render(rgb_fn)
 
         camera_matrix, lens = get_current_camera()
         np.save(out / "camera_matrix.npy", camera_matrix)
@@ -115,6 +116,7 @@ class Renderer:
             imwrite(255 * head_mask.astype(np.uint8), str(out / "head_mask.png"))
 
         depth = exr.get_depth_image()
+        depth[imread(rgb_fn)[:,:,3] == 0] = -1
         with gzip.GzipFile(out / "depth.npy.gz", "w") as fd:
             np.save(fd, depth)
 
