@@ -15,14 +15,15 @@ from blenderset.render import PreviewRenderer, Renderer
 from blenderset.assets import ComposedAssetGenerator
 from blenderset.background import GeneratePremadeBackground
 from blenderset.light import GenerateHdrDoomLight
-from blenderset.bedlam import GenerateBedlam, GenerateBedlamClothes, ExtendedRectanglePositioner, NoClothes
+from blenderset.bedlam import GenerateBedlam, GenerateBedlamClothes, ExtendedRectanglePositioner, NoClothes, GenerateSoccerClothes
 
 np.set_printoptions(threshold=np.inf)
 
 class Scene(ComposedAssetGenerator):
     def setup(self):
-        clothes = GenerateBedlamClothes(self.context)
+        # clothes = GenerateBedlamClothes(self.context)
         # clothes = NoClothes(self.context)
+        clothes = GenerateSoccerClothes(self.context)
         return [
             GeneratePremadeBackground(
                 self.context,
